@@ -122,11 +122,29 @@ Zarch.code = Zarch代码
 ```
 Zarch.objects[Zarch对象名] = CSharpObject对象
 ```
+
+* 手动获取对象
+
+```
+var obj = Zarch.objects[Zarch对象名];
+```
+
 * 手动注入方法
 
 ```
 Zarch.methods[Zarch方法名] = CSharpDelegate委托
 ```
+
+* 手动获取方法
+
+```
+Zarch.methods[Zarch方法名]
+```
+
+```
+((Func<object[],object>)Zarch.methods[Zarch方法名])(parameters);
+```
+
 * 手动调用一个Zarch中的方法
 
 ```
