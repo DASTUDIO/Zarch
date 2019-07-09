@@ -191,6 +191,8 @@ say() ;
 ### 实用示例
 
 ```
+using System;
+using Z;
 class MainClass{
     public static void Main(string[] args) {
         Zarch.methods["print"] = param => { print(param[0].ToString()); return null; };   // <-
