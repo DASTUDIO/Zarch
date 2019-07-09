@@ -18,7 +18,7 @@ C#上用于管理依赖的辅助语言
 
 * 示例：标准实体类
 
-```
+```cs
 
 [ZarchBean]  // <-
 public class User { 
@@ -37,7 +37,7 @@ public class MainClass{
 
 * 示例：多层依赖
 
-```
+```cs
 
 [ZarchBean]  // <-
 public class Engine 
@@ -64,7 +64,7 @@ public class MainClass{
 
 * 示例：多层依赖的手动注入 ( 延迟构造 )
 
-```
+```cs
 
 public class Engine 
 { public string name = "myEngine"; }
@@ -95,59 +95,59 @@ public class MainClass{
 
 * 在一切之前 需要使用命名空间 Z
 
-```
+```cs
 using Z;
 ```
 
 * 执行 Zarch 代码
 
-```
+```cs
 Zarch.code = Zarch代码
 ```
 
 * 自动注入标记
 
-```
+```cs
 [ZarchBean]
 ```
 
 * 带有多层依赖的自动注入标记
 
-```
+```cs
 [ZarchBean(依赖的对象的Zarch对象名)]
 ```
 
 * 手动注入对象
 
-```
+```cs
 Zarch.objects[Zarch对象名] = CSharpObject对象
 ```
 
 * 手动获取对象
 
-```
+```cs
 var obj = Zarch.objects[Zarch对象名];
 ```
 
 * 手动注入方法
 
-```
+```cs
 Zarch.methods[Zarch方法名] = CSharpDelegate委托
 ```
 
 * 手动获取方法
 
-```
+```cs
 Zarch.methods[Zarch方法名]
 ```
 
-```
+```cs
 ((Func<object[],object>)Zarch.methods[Zarch方法名])(parameters);
 ```
 
 * 手动调用一个Zarch中的方法
 
-```
+```cs
 Zarch.call(Zarch方法名,参数1，参数2)
 ```
 
@@ -155,7 +155,7 @@ Zarch.call(Zarch方法名,参数1，参数2)
 
 用于当未使用Zarch.code时访问自动注入的对象
 
-```
+```cs
 Zarch.init()
 ```
 
@@ -163,7 +163,7 @@ Zarch.init()
 
 用于当自动注入内容的多层依赖达到三层以上
 
-```
+```cs
 Zarch.refresh()
 ```
 
@@ -171,44 +171,44 @@ Zarch.refresh()
 
 委托类型例如typeof(Action)
 
-```
+```cs
 Zarch.CreateDelegate(ZarchCode方法名,C#委托类型)
 ```
 ### Zarch Code  
 
 * 分句符 ;
 
-```
+```cs
 code;
 ```
 * 赋值 =
 
-```
+```cs
 y = x ;
 ```
 
 
 * 调用成员 .
 
-```
+```cs
 user.name ;
 ```
 
 * 调用函数 [函数名(传入参数)]
 
-```
+```cs
 say() ;
 ```
 
 * 注释标记 #
 
-```
+```cs
 # 这是一条注释
 ```
 
 ### 实用示例
 
-```
+```cs
 using System;
 using Z;
 class MainClass{
