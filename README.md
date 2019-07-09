@@ -9,7 +9,7 @@ C#上用于管理依赖的辅助语言
 
 ### Unity3D 使用
 
-* 导入Dll [下载]()
+* 拖拽Zarch.dll文件到Unity3D的Project视图里(文件窗口) [下载Zarch.dll](https://github.com/DASTUDIO/Zarch/raw/master/Zarch.dll)
 
 * 使用Z命名空间 `using Z;`
 
