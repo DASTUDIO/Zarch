@@ -1,6 +1,15 @@
 # Zarch
 C#上用于管理依赖的辅助语言
 
+### 如何使用
+
+* 创建.Net Framework项目
+
+* 导入NuGet包 `点击 Project->Add NuGetPackages->搜索ezserver->勾选->Add Package`
+
+* 使用Z命名空间 `using Z;`
+
+
 ## 概览
 
 * 示例：标准实体类
