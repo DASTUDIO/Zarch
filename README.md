@@ -1,5 +1,5 @@
 # Zarch
-是C#上用于管理依赖的辅助语言
+C#上用于管理依赖的辅助语言
 
 ## 概览
 
@@ -7,15 +7,15 @@
 
 ```
 
-    [ZarchBean]								// <-
-    public class User { 
-      public string name = "小明"; 
-      public void Say()
-      { Console.Write( "你好我是" + name ); } }
+[ZarchBean]  // <-
+public class User { 
+  public string name = "小明"; 
+  public void Say()
+  { Console.Write( "你好我是" + name ); } }
 
-	public class MainClass{
-        public static void Main(string[] args)
-        { Zarch.code = "User.Say()"; } }    // <-
+public class MainClass{
+    public static void Main(string[] args)
+    { Zarch.code = "User.Say()"; } }  // <-
         
 
 ```
@@ -26,22 +26,22 @@
 
 ```
 
-    [ZarchBean]					            // <-
-    public class Engine 
-    { public string name = "myEngine"; }
+[ZarchBean]  // <-
+public class Engine 
+{ public string name = "myEngine"; }
 
-    [ZarchBean("Engine")]				    // <-
-    public class Car {
-        Engine e;
+[ZarchBean("Engine")]  // <-
+public class Car {
+    Engine e;
         
-        public void Info()
-        { Console.WriteLine(e.name); } }
+    public void Info()
+    { Console.WriteLine(e.name); } 
         
-        public Car(Engine _e) { this.e = _e; }
+    public Car(Engine _e) { this.e = _e; } }
         
-	 public class MainClass{
-        public static void Main(string[] args)
-        { Zarch.code = "Car.Info()"; } }     // <-
+public class MainClass{
+      public static void Main(string[] args)
+      { Zarch.code = "Car.Info()"; } }  // <-
         
 
 ```
@@ -49,26 +49,26 @@
 输出  `myEngine`
 
 
-* 示例：多层依赖的动态注入 ( 延迟构造 )
+* 示例：多层依赖的手动注入 ( 延迟构造 )
 
 ```
 
-    public class Engine 
-    { public string name = "myEngine"; }
+public class Engine 
+{ public string name = "myEngine"; }
 
-    [ZarchBean("Engine")]				              // <-
-    public class Car {
-        Engine e;
+[ZarchBean("Engine")]  // <-
+public class Car {
+    Engine e;
         
-        public void Info()
-        { Console.WriteLine(e.name); } }
+    public void Info()
+    { Console.WriteLine(e.name); } }
         
-        public Car(Engine _e) { this.e = _e; }
+    public Car(Engine _e) { this.e = _e; }
         
-	 public class MainClass{
-        public static void Main(string[] args) { 
-        	Zarch.objects["Engine"] = new Engine();   // <-
-        	Zarch.code = "Car.Info()"; } }            // <-
+public class MainClass{
+    public static void Main(string[] args) { 
+         Zarch.objects["Engine"] = new Engine();  // <-
+         Zarch.code = "Car.Info()"; } }  // <-
         	
 
 ```
@@ -79,6 +79,12 @@
 
 
 ### Zarch in C Sharp
+
+* 在一切之前 需要使用命名空间 Z
+
+```
+using Z;
+```
 
 * 执行 Zarch 代码
 
@@ -95,26 +101,23 @@ Zarch.code = Zarch代码
 * 带有多层依赖的自动注入标记
 
 ```
-[ZarchBean(Zarch对象名)]
+[ZarchBean(依赖的对象的Zarch对象名)]
 ```
 
 * 手动注入对象
 
 ```
 Zarch.objects[Zarch对象名] = CSharpObject对象
-
 ```
 * 手动注入方法
 
 ```
 Zarch.methods[Zarch方法名] = CSharpDelegate委托
-
 ```
 * 手动调用一个Zarch中的方法
 
 ```
 Zarch.call(Zarch方法名,参数1，参数2)
-
 ```
 
 * 手动唤起自动注入 
@@ -158,14 +161,12 @@ y = x ;
 
 ```
 user.name ;
-
 ```
 
 * 调用函数 [函数名(传入参数)]
 
 ```
 say() ;
-
 ```
 
 * 注释标记 #
@@ -179,9 +180,9 @@ say() ;
 ```
 class MainClass{
     public static void Main(string[] args) {
-        Zarch.methods["print"] = param => { print(param[0].ToString()); return null; };      // <-
-        Zarch.methods["toStr"] = param => { return ToStringResult((bool)param[0]); };        // <-
-        Zarch.code = "res = toStr(Connector.Connect());print(res);"; }                       // <-
+        Zarch.methods["print"] = param => { print(param[0].ToString()); return null; };   // <-
+        Zarch.methods["toStr"] = param => { return ToStringResult((bool)param[0]); };   // <-
+        Zarch.code = "res = toStr(Connector.Connect());print(res);"; }  // <-
 
     public static string ToStringResult(bool res) {
         if (res) { return "Success"; }
@@ -191,13 +192,13 @@ class MainClass{
         Console.WriteLine(msg);}
     }
 
-[ZarchBean]						// <-
+[ZarchBean]  // <-
 public class Config {
     public string host = "http://localhost:8080";
     public string name = "admin";
     public string password = "admin123"; } 
 
-[ZarchBean("Config")]           // <-
+[ZarchBean("Config")]   // <-
 public class Connector{
     Config config;
     public Connector(Config _config)
