@@ -88,7 +88,7 @@ public class MainClass{
 输出 `myEngine`
 
 
-## Get Start
+## Get Started
 
 
 ### Zarch in C Sharp
