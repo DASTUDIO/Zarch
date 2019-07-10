@@ -68,14 +68,39 @@ namespace Z
             }
         }
 
-        public Type[] GetTypes()
+        public Type[] GetTypes(AssemblyType type, Type containedClass)
         {
-            return Assembly.GetEntryAssembly().GetTypes();
+            switch (type)
+            {
+                case AssemblyType.Executing:
+                    return Assembly.GetExecutingAssembly().GetTypes();
+
+                case AssemblyType.Entry:
+                    return Assembly.GetEntryAssembly().GetTypes();
+
+                case AssemblyType.Calling:
+                    return Assembly.GetCallingAssembly().GetTypes();
+
+                case AssemblyType.ByContainedClass:
+                    return Assembly.GetAssembly(containedClass).GetTypes();
+
+                default:
+                    return null;
+            }
+
         }
 
         public object CreateInstance(Type type, object[] parameters)
         {
             return Activator.CreateInstance(type, parameters);
+        }
+
+        public enum AssemblyType
+        {
+            Entry = 0,
+            Executing = 1,
+            Calling = 2,
+            ByContainedClass = 3
         }
 
     }

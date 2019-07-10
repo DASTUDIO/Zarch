@@ -189,7 +189,7 @@ namespace Z
 
         public static void init()
         {
-            foreach (Type type in objects.reflectHelper.GetTypes())
+            foreach (Type type in objects.reflectHelper.GetTypes(ReflectConfig.Assembly, ReflectConfig.ContainedClass))
             {
                 foreach (var attributeObj in type.GetCustomAttributes(false))
                 {
@@ -266,13 +266,21 @@ namespace Z
 
         Regex regex = new Regex(@"([^\(=]+?\([^()]*?\))");
 
+        Regex isString = new Regex(@"'([^']*?)'");
+
+        Regex isInt = new Regex(@"(^\d+?$)");
+
+        Regex isDouble = new Regex(@"(^\d+?\.\d+?$)");
+
+
+
         string GenTmpKey()
         {
             string res = "tmp_";
 
-            Random r = new Random(System.DateTime.Now.Millisecond);
+            Random r = new Random();
 
-            res += r.Next(100, 1000);
+            res += r.Next();
 
             if (tmpKeys.Contains(res))
                 return GenTmpKey();
@@ -346,7 +354,22 @@ namespace Z
 
                             for (int j = 0; j < pms.Length; j++)
                             {
-                                param.Add(objects[pms[j]]);
+                                if (isString.IsMatch(pms[j]))
+                                {
+                                    param.Add(isString.Match(pms[j]).Groups[0].Value);
+                                }
+                                else if (isInt.IsMatch(pms[j]))
+                                {
+                                    param.Add(Int32.Parse(isInt.Match(pms[j]).Groups[1].Value));
+                                }
+                                else if (isDouble.IsMatch(pms[j]))
+                                {
+                                    param.Add(Double.Parse(isDouble.Match(pms[j]).Groups[1].Value));
+                                }
+                                else
+                                {
+                                    param.Add(objects[pms[j]]);
+                                }
                             }
                         }
                         else
@@ -371,9 +394,23 @@ namespace Z
 
             for (int i = res.Length - 1; i > 0; i--)
             {
-                objects[res[i - 1]] = objects[res[i]];
+                if (isString.IsMatch(isString.Match(res[i]).Groups[0].Value))
+                {
+                    objects[res[i - 1]] = res[i];
+                }
+                else if (isInt.IsMatch(isInt.Match(res[i]).Groups[1].Value))
+                {
+                    objects[res[i - 1]] = Int32.Parse(res[i]);
+                }
+                else if (isDouble.IsMatch(isDouble.Match(res[i]).Groups[1].Value))
+                {
+                    objects[res[i - 1]] = Double.Parse(res[i]);
+                }
+                else
+                {
+                    objects[res[i - 1]] = objects[res[i]];
+                }
             }
-
         }
 
         string[] GetLines(string content)
@@ -403,6 +440,13 @@ namespace Z
             return regex.IsMatch(line);
         }
 
+        public class ReflectConfig
+        {
+            public static ReflectHelper.AssemblyType Assembly = ReflectHelper.AssemblyType.Entry;
+
+            public static Type ContainedClass = typeof(Zarch);
+        }
+
         public class _ZarchMethod
         {
             public Func<object[], object> this[string name]
@@ -421,5 +465,4 @@ namespace Z
         }
 
     }
-
 }
