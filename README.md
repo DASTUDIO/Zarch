@@ -17,80 +17,6 @@ C#的辅助语言,用于管理依赖。
 * 参考 Package 里的 Demo
 
 
-## 概览
-
-* 示例：标准实体类
-
-```cs
-
-[ZarchBean]  // <-
-public class User { 
-  public string name = "小明"; 
-  public void Say()
-  { Console.Write( "你好我是" + name ); } }
-
-public class MainClass{
-    public static void Main(string[] args)
-    { Zarch.code = "User.Say()"; } }  // <-
-        
-
-```
-输出 `你好我是小明`
-
-
-* 示例：多层依赖
-
-```cs
-
-[ZarchBean]  // <-
-public class Engine 
-{ public string name = "myEngine"; }
-
-[ZarchBean("Engine")]  // <-
-public class Car {
-    Engine e;
-        
-    public void Info()
-    { Console.WriteLine(e.name); } 
-        
-    public Car(Engine _e) { this.e = _e; } }
-        
-public class MainClass{
-      public static void Main(string[] args)
-      { Zarch.code = "Car.Info()"; } }  // <-
-        
-
-```
-
-输出  `myEngine`
-
-
-* 示例：多层依赖的手动注入 ( 延迟构造 )
-
-```cs
-
-public class Engine 
-{ public string name = "myEngine"; }
-
-[ZarchBean("Engine")]  // <-
-public class Car {
-    Engine e;
-        
-    public void Info()
-    { Console.WriteLine(e.name); } }
-        
-    public Car(Engine _e) { this.e = _e; }
-        
-public class MainClass{
-    public static void Main(string[] args) { 
-         Zarch.objects["Engine"] = new Engine();  // <-
-         Zarch.code = "Car.Info()"; } }  // <-
-        	
-
-```
-输出 `myEngine`
-
-
 ## Get Started
 
 
@@ -256,6 +182,80 @@ x = 100 ;
 ```
 x = 0.75 ;
 ```
+
+## 示例
+
+* 标准实体类
+
+```cs
+
+[ZarchBean]  // <-
+public class User { 
+  public string name = "小明"; 
+  public void Say()
+  { Console.Write( "你好我是" + name ); } }
+
+public class MainClass{
+    public static void Main(string[] args)
+    { Zarch.code = "User.Say()"; } }  // <-
+        
+
+```
+输出 `你好我是小明`
+
+
+* 多层依赖
+
+```cs
+
+[ZarchBean]  // <-
+public class Engine 
+{ public string name = "myEngine"; }
+
+[ZarchBean("Engine")]  // <-
+public class Car {
+    Engine e;
+        
+    public void Info()
+    { Console.WriteLine(e.name); } 
+        
+    public Car(Engine _e) { this.e = _e; } }
+        
+public class MainClass{
+      public static void Main(string[] args)
+      { Zarch.code = "Car.Info()"; } }  // <-
+        
+
+```
+
+输出  `myEngine`
+
+
+* 多层依赖的手动注入 
+
+```cs
+
+public class Engine 
+{ public string name = "myEngine"; }
+
+[ZarchBean("Engine")]  // <-
+public class Car {
+    Engine e;
+        
+    public void Info()
+    { Console.WriteLine(e.name); } }
+        
+    public Car(Engine _e) { this.e = _e; }
+        
+public class MainClass{
+    public static void Main(string[] args) { 
+         Zarch.objects["Engine"] = new Engine();  // <-
+         Zarch.code = "Car.Info()"; } }  // <-
+        	
+
+```
+输出 `myEngine`
+
 
 ### 实用示例
 
