@@ -1,5 +1,8 @@
 # Zarch
-C#上用于管理依赖的辅助语言
+C#的辅助语言,用于管理依赖。
+* 1.自动创建并注入使用Attribute标记的类的对象。
+* 2.用Zarch语言字符串控制被管理的对象的行为。
+* 3.网络传输的Zarch语言字符串以实现RPC功能。
 
 ### Net Framework 使用
 
@@ -174,36 +177,84 @@ Zarch.refresh()
 ```cs
 Zarch.CreateDelegate(ZarchCode方法名,C#委托类型)
 ```
+
+* 配置反射的程序集 默认Entry
+
+Uninty3D是Executing，
+
+.NetFramework是Entry，
+
+反射指定的程序集（比如加载的Dll）ByContainedClass+设置那个程序集中包含的类，
+
+调取方的程序集是Calling
+
+
+
+```cs
+Zarch.ReflectConfig.Assembly = ReflectHelper.AssemblyType.Entry;
+//Zarch.ReflectConfig.ContainedClass = typeof(SomeClass); //如果是ByContainedClass则需要设置
+```
+
+以下是全部类型
+
+```cs   
+public enum AssemblyType
+{
+        Entry ,
+        Executing ,
+        Calling ,
+        ByContainedClass 
+}
+```
+
 ### Zarch Code  
 
 * 分句符 ;
 
-```cs
+```
 code;
 ```
 * 赋值 =
 
-```cs
+```
 y = x ;
 ```
 
 
 * 调用成员 .
 
-```cs
+```
 user.name ;
 ```
 
 * 调用函数 [函数名(传入参数)]
 
-```cs
+```
 say() ;
 ```
 
 * 注释标记 #
 
-```cs
+```
 # 这是一条注释
+```
+
+* 字符串(String) ''
+
+```
+x = '你好这是一条字符串';
+```
+
+* 整数(Int) 
+
+```
+x = 100 ;
+```
+
+* 双精度小数(Double)
+
+```
+x = 0.75 ;
 ```
 
 ### 实用示例
