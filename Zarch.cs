@@ -266,7 +266,7 @@ namespace Z
 
         Regex regex = new Regex(@"([^\(=]+?\([^()]*?\))");
 
-        Regex isString = new Regex(@"'([^']*?)'");
+        Regex isString = new Regex(@"^'([^']*?)'$");
 
         Regex isInt = new Regex(@"(^\d+?$)");
 
@@ -356,7 +356,7 @@ namespace Z
                             {
                                 if (isString.IsMatch(pms[j]))
                                 {
-                                    param.Add(isString.Match(pms[j]).Groups[0].Value);
+                                    param.Add(isString.Match(pms[j]).Groups[1].Value);
                                 }
                                 else if (isInt.IsMatch(pms[j]))
                                 {
@@ -394,17 +394,17 @@ namespace Z
 
             for (int i = res.Length - 1; i > 0; i--)
             {
-                if (isString.IsMatch(isString.Match(res[i]).Groups[0].Value))
+                if (isString.IsMatch(res[i]))
                 {
-                    objects[res[i - 1]] = res[i];
+                    objects[res[i - 1]] = isString.Match(res[i]).Groups[1].Value;
                 }
-                else if (isInt.IsMatch(isInt.Match(res[i]).Groups[1].Value))
+                else if (isInt.IsMatch(res[i]))
                 {
-                    objects[res[i - 1]] = Int32.Parse(res[i]);
+                    objects[res[i - 1]] = Int32.Parse(isInt.Match(res[i]).Groups[1].Value);
                 }
-                else if (isDouble.IsMatch(isDouble.Match(res[i]).Groups[1].Value))
+                else if (isDouble.IsMatch(res[i]))
                 {
-                    objects[res[i - 1]] = Double.Parse(res[i]);
+                    objects[res[i - 1]] = Double.Parse(isDouble.Match(res[i]).Groups[1].Value);
                 }
                 else
                 {
