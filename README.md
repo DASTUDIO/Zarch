@@ -104,8 +104,9 @@ x = {print('hello');print(',world');} ;
 * 取委托符 []
 
 ```python
-# x.play()
-y = [x.play]
+# x.play();
+y = [x.play];
+y();
 ```
 
 * 流程控制
