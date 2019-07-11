@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Text;
 using System.Text.RegularExpressions;
 using System.Collections.Generic;
 
@@ -7,49 +8,54 @@ namespace Z
 {
     public class Zarch
     {
+        #region Elements
+
         Dictionary<string, object> data = new Dictionary<string, object>();
 
         Dictionary<string, Type> dataManifest = new Dictionary<string, Type>();
 
+        Dictionary<string, Type> class_data = new Dictionary<string, Type>();
+
         Dictionary<string, Func<object[], object>> method_data = new Dictionary<string, Func<object[], object>>();
 
+        #endregion
 
-        ReflectHelper reflectHelper = new ReflectHelper();
+        #region Facade
 
-        public static Delegate CreateDelegate(string methodKey, Type delegateType)
+        public static string code
         {
-            string[] res = objects.SplitResourceKey(methodKey);
+            get
+            {
+                return _code;
+            }
+            set
+            {
+                if (!isInited)
+                    init();
 
-            string sourceKey = res[0];
+                _code = value;
 
-            string methodName = res[1];
+                refresh();
 
-            object source = objects[sourceKey];
+                run(_code);
 
-            Type type = objects.dataManifest[sourceKey];
-
-            return objects.reflectHelper.GetDelegate(methodName, source, type, delegateType);
-
+            }
         }
 
-        string[] SplitResourceKey(string funcKey)
+        public static Zarch objects
         {
-            string[] res = funcKey.Split('.');
+            get
+            {
+                if (_instance == null)
+                    _instance = new Zarch();
 
-            if (res.Length < 2)
-                throw new Exception();
-
-            if (res.Length == 2)
-                return res;
-
-            string[] result = new string[2];
-
-            result[0] = funcKey.Substring(0, (funcKey.Length - res[res.Length - 1].Length - 1));
-
-            result[1] = res[res.Length - 1];
-
-            return result;
+                return _instance;
+            }
         }
+
+        public static _ZarchClass classes = new _ZarchClass();
+
+        public static _ZarchMethod methods = new _ZarchMethod();
 
         public object this[string name]
         {
@@ -110,31 +116,6 @@ namespace Z
             }
         }
 
-        public string[] tree
-        {
-            get
-            {
-                List<string> res = new List<string>(data.Keys);
-                res.Sort((x, y) => string.Compare(x, y));
-                return res.ToArray();
-            }
-        }
-
-
-        static Zarch _instance;
-
-        public static Zarch objects
-        {
-            get
-            {
-                if (_instance == null)
-                    _instance = new Zarch();
-
-                return _instance;
-            }
-        }
-
-        public static _ZarchMethod methods = new _ZarchMethod();
 
         public static object call(string methodKey, params object[] parameters)
         {
@@ -155,37 +136,35 @@ namespace Z
             }
             catch
             {
-                return objects.method_data[methodKey](parameters);
+                try
+                {
+                    return ((Func<object[], object>)objects[methodKey])(parameters);
+
+                }
+                catch
+                {
+                    return objects.method_data[methodKey](parameters);
+                }
             }
+
         }
 
-
-        static string _code;
-
-        static bool isInited;
-
-        public static string code
+        public static Delegate CreateDelegate(string methodKey, Type delegateType)
         {
-            get
-            {
-                return _code;
-            }
-            set
-            {
-                if (!isInited)
-                    init();
+            string[] res = objects.SplitResourceKey(methodKey);
 
-                _code = value;
+            string sourceKey = res[0];
 
-                refresh();
+            string methodName = res[1];
 
-                run(_code);
+            object source = objects[sourceKey];
 
-            }
+            Type type = objects.dataManifest[sourceKey];
+
+            return objects.reflectHelper.GetDelegate(methodName, source, type, delegateType);
+
         }
 
-
-        static Dictionary<Type, string[]> temp = new Dictionary<Type, string[]>();
 
         public static void init()
         {
@@ -220,12 +199,23 @@ namespace Z
                     }
                 }
             }
-            refresh();
+
+            foreach (var item in FunctionConfigs)
+            {
+                objects.method_data[item.Key] = item.Value;
+            }
+
             isInited = true;
+
+            refresh();
         }
 
         public static void refresh()
         {
+            // Dependence
+            if (temp.Count == 0)
+                return;
+
             var tmp_keys = new List<Type>(temp.Keys);
 
             for (int i = 0; i < tmp_keys.Count; i++)
@@ -250,11 +240,77 @@ namespace Z
                 catch { }
 
             }
+
         }
 
-        static void run(string code)
+        public static void clear()
         {
-            string[] lines = objects.GetLines(code);
+            objects.data.Clear();
+            objects.method_data.Clear();
+            objects.class_data.Clear();
+            objects.dataManifest.Clear();
+            objects.tmpKeys.Clear();
+            isInited = false;
+        }
+
+
+        public string[] tree
+        {
+            get
+            {
+                List<string> res = new List<string>(data.Keys);
+                res.Sort((x, y) => string.Compare(x, y));
+                return res.ToArray();
+            }
+        }
+
+
+        public static Action<string> LogDelegate
+        { set { objects.functions.printEvent = value; } }
+
+        public static Dictionary<string, Func<object[], object>> FunctionConfigs = new Dictionary<string, Func<object[], object>>
+        {
+            { "int",objects.functions.GetInt },
+            { "float",objects.functions.GetFloat },
+            { "double",objects.functions.GetDouble },
+            { "str", objects.functions.GetString },
+            { "list", objects.functions.GetList },
+            { "null", objects.functions.GetNull },
+            { "bool", objects.functions.GetBool },
+            { "if", objects.functions.DoIf },
+            { "for",objects.functions.DoFor },
+            { "print",objects.functions.Print }
+        };
+
+
+        #endregion
+
+        #region Internal
+
+        #region Internal Elements
+
+        static Dictionary<Type, string[]> temp = new Dictionary<Type, string[]>();
+
+        ZarchFunctions functions = new ZarchFunctions();
+
+        ZarchReflectHelper reflectHelper = new ZarchReflectHelper();
+
+        static Zarch _instance;
+
+        static string _code;
+
+        static bool isInited;
+
+        #endregion
+
+        #region phrase analyze
+
+        static void run(string zarchCode)
+        {
+            if (objects.codeBlockBody.IsMatch(zarchCode))
+                zarchCode = objects.ProcessCodeBlock(zarchCode);
+
+            string[] lines = objects.GetLines(zarchCode);
 
             for (int i = 0; i < lines.Length; i++)
             {
@@ -262,17 +318,55 @@ namespace Z
             }
         }
 
-        List<string> tmpKeys = new List<string>();
+        void RunOneLine(string line)
+        {
+            line = line.Replace(" ", "");
 
-        Regex regex = new Regex(@"([^\(=]+?\([^()]*?\))");
+            if (line.Length < 1)
+                return;
 
-        Regex isString = new Regex(@"^'([^']*?)'$");
-
-        Regex isInt = new Regex(@"(^\d+?$)");
-
-        Regex isDouble = new Regex(@"(^\d+?\.\d+?$)");
+            if (line.Substring(0, 1) == "#")
+                return;
 
 
+            if (IsMethod(line))
+                line = ProcessMethods(line);
+
+            if (IsExpression(line))
+                ProcessExpression(line);
+
+            for (int i = 0; i < objects.tmpKeys.Count; i++)
+            {
+                objects.data.Remove(objects.tmpKeys[i]);
+            }
+        }
+
+        string[] GetLines(string content)
+        {
+            string[] lns = content.Split(';')
+                .Where(s => !string.IsNullOrEmpty(s)).ToArray();
+
+            return lns;
+        }
+
+        string[] SplitResourceKey(string funcKey)
+        {
+            string[] res = funcKey.Split('.');
+
+            if (res.Length < 2)
+                throw new Exception();
+
+            if (res.Length == 2)
+                return res;
+
+            string[] result = new string[2];
+
+            result[0] = funcKey.Substring(0, (funcKey.Length - res[res.Length - 1].Length - 1));
+
+            result[1] = res[res.Length - 1];
+
+            return result;
+        }
 
         string GenTmpKey()
         {
@@ -288,28 +382,17 @@ namespace Z
             return res;
         }
 
-        void RunOneLine(string line)
+        #region Method
+
+        Regex methodBody = new Regex(@"([^\(=]+?\([^()]*?\))");
+
+        string commaPlaceholder = "@#&comma&#@";
+
+        List<string> tmpKeys = new List<string>();
+
+        bool IsMethod(string line)
         {
-            line = line.Replace(" ", "");
-
-            if (line.Length > 0)
-            {
-                if (line.Substring(0, 1) == "#")
-                    return;
-            }
-            else
-                return;
-
-            if (IsMethod(line))
-                line = ProcessMethods(line);
-
-            if (objects.IsExpression(line))
-                ProcessExpression(line);
-
-            for (int i = 0; i < tmpKeys.Count; i++)
-            {
-                objects.data.Remove(tmpKeys[i]);
-            }
+            return methodBody.IsMatch(line);
         }
 
         string ProcessMethods(string line)
@@ -332,60 +415,144 @@ namespace Z
             if (left != right)
                 throw new Exception("括号不对称");
 
+            // 从左往右
             while (IsMethod(line))
             {
-                MatchCollection match = regex.Matches(line);
+                MatchCollection match = methodBody.Matches(line);
 
-                for (int i = 0; i < match.Count; i++)
+                if (match.Count == 0)
+                    break;
+
+                string phrase = match[0].Groups[1].Value;
+
+                string methodKey = phrase.Substring(0, phrase.IndexOf("(", StringComparison.Ordinal));
+
+                string paramKeys = phrase.Substring(phrase.IndexOf("(", StringComparison.Ordinal)).Replace("(", "").Replace(")", "");
+
+                List<object> param = new List<object>();
+
+                if (paramKeys.Length != 0)
                 {
-                    string phrase = match[i].Groups[1].Value;
-
-                    string methodKey = phrase.Substring(0, phrase.IndexOf("(", StringComparison.Ordinal));
-
-                    string paramKeys = phrase.Substring(phrase.IndexOf("(", StringComparison.Ordinal)).Replace("(", "").Replace(")", "");
-
-                    List<object> param = new List<object>();
-
-                    if (paramKeys.Length != 0)
+                    if (paramKeys.IndexOf(",", StringComparison.Ordinal) > 0)
                     {
-                        if (paramKeys.IndexOf(",", StringComparison.Ordinal) > 0)
-                        {
-                            string[] pms = paramKeys.Split(',');
+                        string[] strs = paramKeys.Split('\'');
 
-                            for (int j = 0; j < pms.Length; j++)
+                        StringBuilder builder = new StringBuilder();
+
+                        for (int i = 1; i < strs.Length; i = i + 2)
+                        {
+                            strs[i] = strs[i].Replace(",", commaPlaceholder);
+                        }
+
+                        for (int i = 0; i < strs.Length; i++)
+                        {
+                            if (i == 0)
+                                builder.Append(strs[i]);
+                            else
+                                builder.Append("'").Append(strs[i]);
+                        }
+
+                        paramKeys = builder.ToString();
+
+                        string[] pms = paramKeys.Split(',');
+
+                        for (int j = 0; j < pms.Length; j++)
+                        {
+                            pms[j] = pms[j].Replace(commaPlaceholder, ",");
+
+                            if (isString.IsMatch(pms[j]))
                             {
-                                if (isString.IsMatch(pms[j]))
-                                {
-                                    param.Add(isString.Match(pms[j]).Groups[1].Value);
-                                }
-                                else if (isInt.IsMatch(pms[j]))
-                                {
-                                    param.Add(Int32.Parse(isInt.Match(pms[j]).Groups[1].Value));
-                                }
-                                else if (isDouble.IsMatch(pms[j]))
-                                {
-                                    param.Add(Double.Parse(isDouble.Match(pms[j]).Groups[1].Value));
-                                }
-                                else
-                                {
-                                    param.Add(objects[pms[j]]);
-                                }
+                                param.Add(isString.Match(pms[j]).Groups[1].Value);
+                            }
+                            else if (isInt.IsMatch(pms[j]))
+                            {
+                                param.Add(Int32.Parse(isInt.Match(pms[j]).Groups[1].Value));
+                            }
+                            else if (isDouble.IsMatch(pms[j]))
+                            {
+                                param.Add(Double.Parse(isDouble.Match(pms[j]).Groups[1].Value));
+                            }
+                            else if (isDelegate.IsMatch(pms[j]))
+                            {
+                                string delegateKey = isDelegate.Match(pms[j]).Groups[1].Value;
+                                param.Add(methods[delegateKey]);
+                            }
+                            else
+                            {
+                                param.Add(objects[pms[j]]);
                             }
                         }
-                        else
-                            param.Add(objects[paramKeys]);
                     }
+                    else
+                    {
+                        if (isString.IsMatch(paramKeys))
+                        {
+                            param.Add(isString.Match(paramKeys).Groups[1].Value);
+                        }
+                        else if (isInt.IsMatch(paramKeys))
+                        {
+                            param.Add(Int32.Parse(isInt.Match(paramKeys).Groups[1].Value));
+                        }
+                        else if (isDouble.IsMatch(paramKeys))
+                        {
+                            param.Add(Double.Parse(isDouble.Match(paramKeys).Groups[1].Value));
+                        }
+                        else if (isDelegate.IsMatch(paramKeys))
+                        {
+                            string delegateKey = isDelegate.Match(paramKeys).Groups[1].Value;
+                            param.Add(methods[delegateKey]);
+                        }
+                        else
+                        {
+                            param.Add(objects[paramKeys]);
+                        }
 
-                    string tmpKey = GenTmpKey();
-
-                    tmpKeys.Add(tmpKey);
-
-                    data[tmpKey] = call(methodKey, param.ToArray());
-
-                    line = line.Replace(phrase, tmpKey);
+                    }
                 }
+
+                string tmpKey = GenTmpKey();
+
+                tmpKeys.Add(tmpKey);
+
+                try
+                {
+                    dataManifest[tmpKey] = classes[methodKey];
+                    data[tmpKey] = classes.GetConstrutor(methodKey)(param.ToArray());
+                }
+                catch
+                {
+                    data[tmpKey] = methods[methodKey](param.ToArray());
+                }
+
+                line = line.Replace(phrase, tmpKey);
+
             }
             return line;
+        }
+
+        #endregion
+
+        #region Express
+
+        Regex isString = new Regex(@"^'([^']*?)'$");
+
+        Regex isInt = new Regex(@"(^\d+?$)");
+
+        Regex isDouble = new Regex(@"(^\d+?\.\d+?$)");
+
+        Regex isDelegate = new Regex(@"^\[([^\[\]\(\)\{\}\=]+?)\]$");
+
+        bool IsExpression(string line)
+        {
+            var first = line.IndexOf("=", StringComparison.Ordinal);
+
+            var last = line.LastIndexOf("=", StringComparison.Ordinal);
+
+            if (first != -1 && last != -1 && first != 0 && last != line.Length - 1)
+                return true;
+
+            return false;
+
         }
 
         void ProcessExpression(string line)
@@ -406,6 +573,11 @@ namespace Z
                 {
                     objects[res[i - 1]] = Double.Parse(isDouble.Match(res[i]).Groups[1].Value);
                 }
+                else if (isDelegate.IsMatch(res[i]))
+                {
+                    string delegateKey = isDelegate.Match(res[i]).Groups[1].Value;
+                    objects[res[i - 1]] = methods[delegateKey];
+                }
                 else
                 {
                     objects[res[i - 1]] = objects[res[i]];
@@ -413,36 +585,46 @@ namespace Z
             }
         }
 
-        string[] GetLines(string content)
-        {
-            string[] lns = content.Split(';')
-                .Where(s => !string.IsNullOrEmpty(s)).ToArray();
+        #endregion
 
-            return lns;
+        #region code block
+
+        Regex codeBlockBody = new Regex(@"(\{[^{}]*?\})");
+
+        Regex codeBlockSection = new Regex(@"\{([^{}]*?)\}");
+
+        public string ProcessCodeBlock(string line)
+        {
+            MatchCollection matches = codeBlockBody.Matches(line);
+
+            for (int i = 0; i < matches.Count; i++)
+            {
+                string codeBodyStr = matches[i].Groups[1].Value;
+
+                string codeSectionStr = codeBlockSection.Match(codeBodyStr).Groups[1].Value;
+
+                string tmp_key = GenTmpKey();
+
+                tmpKeys.Add(tmp_key);
+
+                method_data.Add(tmp_key, (param) => { run(codeSectionStr); return null; });
+
+                line = line.Replace(codeBodyStr, "[" + tmp_key + "]");
+
+            }
+
+            return line;
         }
 
+        #endregion
 
-        bool IsExpression(string line)
-        {
-            var first = line.IndexOf("=", StringComparison.Ordinal);
+        #endregion
 
-            var last = line.LastIndexOf("=", StringComparison.Ordinal);
-
-            if (first != -1 && last != -1 && first != 0 && last != line.Length - 1)
-                return true;
-
-            return false;
-
-        }
-
-        bool IsMethod(string line)
-        {
-            return regex.IsMatch(line);
-        }
+        #region internal classes
 
         public class ReflectConfig
         {
-            public static ReflectHelper.AssemblyType Assembly = ReflectHelper.AssemblyType.Entry;
+            public static ZarchReflectHelper.AssemblyType Assembly = ZarchReflectHelper.AssemblyType.Entry;
 
             public static Type ContainedClass = typeof(Zarch);
         }
@@ -454,15 +636,44 @@ namespace Z
                 get
                 {
                     return (parameters) => call(name, parameters);
-
                 }
                 set
                 {
+                    if (FunctionConfigs.ContainsKey(name))
+                        throw new Exception("该函数名属于内置功能" + name);
                     objects.method_data[name] = value;
                 }
             }
 
         }
+
+        public class _ZarchClass
+        {
+            public Type this[string name]
+            {
+                get
+                {
+                    return objects.class_data[name];
+                }
+
+                set
+                {
+                    objects.class_data[name] = value;
+                }
+            }
+
+            public Func<object[], object> GetConstrutor(string name)
+            {
+                return (object[] param) => { return objects.reflectHelper.CreateInstance(objects.class_data[name], param); };
+            }
+
+        }
+
+        #endregion
+
+        #endregion
+
+
 
     }
 }

@@ -3,14 +3,21 @@ using System.Reflection;
 
 namespace Z
 {
-    public class ReflectHelper
+
+    public class ZarchReflectHelper
     {
         public object InvokeMethod(string name, object[] param, object source, Type type)
         {
             MethodInfo method = type.GetMethod(name);
 
-            return method.Invoke(source, param);
-
+            try
+            {
+                return method.Invoke(source, param);
+            }
+            catch
+            {
+                return method.Invoke(source, null);
+            }
         }
 
         public Delegate GetDelegate(string name, object source, Type type, Type delegateType)
@@ -92,7 +99,14 @@ namespace Z
 
         public object CreateInstance(Type type, object[] parameters)
         {
-            return Activator.CreateInstance(type, parameters);
+            try
+            {
+                return Activator.CreateInstance(type, parameters);
+            }
+            catch
+            {
+                return Activator.CreateInstance(type);
+            }
         }
 
         public enum AssemblyType
@@ -104,4 +118,5 @@ namespace Z
         }
 
     }
+
 }

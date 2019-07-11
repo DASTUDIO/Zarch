@@ -6,14 +6,21 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{0E20D5EF-4DB1-4559-8999-919E9E29F406}</ProjectGuid>
     <OutputType>Library</OutputType>
-    <RootNamespace>Zarch</RootNamespace>
-    <AssemblyName>Zarch</AssemblyName>
+    <RootNamespace>ZarchLib</RootNamespace>
+    <AssemblyName>ZarchLib</AssemblyName>
     <TargetFrameworkVersion>v4.7</TargetFrameworkVersion>
     <PackageId>Zarch</PackageId>
-    <PackageVersion>1.0.0</PackageVersion>
+    <PackageVersion>1.0.3</PackageVersion>
     <Authors>DavidJang</Authors>
     <NeutralLanguage>zh</NeutralLanguage>
-    <Description>用于管理依赖的辅助语言。1.自动注入使用Attribute标记的实体类。2.用文本控制程序行为。</Description>
+    <Description>用于管理依赖的辅助语言。1.自动创建并注入使用Attribute标记的类对象。2.用Zarch语言字符串控制程序行为。3.网络传输的Zarch语言字符串以实现RPC功能。</Description>
+    <Copyright>DavidJang</Copyright>
+    <PackageLicenseUrl>https://github.com/DASTUDIO/Zarch/blob/master/LICENSE</PackageLicenseUrl>
+    <Owners>DavidJang</Owners>
+    <PackageProjectUrl>https://github.com/DASTUDIO/Zarch</PackageProjectUrl>
+    <Summary>用于管理依赖的语言。1.自动创建并注入使用Attribute标记的类对象。2.用Zarch语言字符串控制程序行为。3.网络传输的Zarch语言字符串以实现RPC功能。</Summary>
+    <Title>Zarch</Title>
+    <PackOnBuild>true</PackOnBuild>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -38,8 +45,9 @@
   <ItemGroup>
     <Compile Include="Zarch.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ReflectHelper.cs" />
-    <Compile Include="Attributes.cs" />
+    <Compile Include="ZarchReflectHelper.cs" />
+    <Compile Include="ZarchBeanAttribute.cs" />
+    <Compile Include="ZarchFunctions.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
