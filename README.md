@@ -99,6 +99,7 @@ x.name = '小明' ; x.age = 15 ;
 
 ```python
 x = {print('hello');print(',world');} ;
+x();
 ```
 
 * 取委托符 []
