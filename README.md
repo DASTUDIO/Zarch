@@ -135,16 +135,11 @@ for(0,1,100,[x.play])
 
 * 面向对象
 
-C# Code
-
-```cs
-Zarch.classes["T"] = typeof(Vector3);
-```
 
 Zarch Code
 
 ```python
-x = T(float(0),float(0),folat(0));
+x = T(); x.play();
 ```
 
 * 内置函数
