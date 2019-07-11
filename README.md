@@ -190,6 +190,15 @@ Zarch.code = Zarch代码
 [ZarchBean(依赖的对象的Zarch对象名)]
 ```
 
+* 传入一个类
+```cs
+Zarch.classes[ZarchCode类名]=typeof(C#类名)
+````
+在Zarch代码中示例话
+```cs
+Zarch.code = "x = ZarchCode类名();x.say();";
+```
+
 * 手动注入对象
 
 ```cs
