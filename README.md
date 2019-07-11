@@ -19,6 +19,133 @@ C#的辅助语言,用于管理依赖。
 
 ## Get Started
 
+### Zarch Code  
+
+* 分句符 ;
+
+```python
+code;
+```
+* 赋值 =
+
+```python
+y = x ;
+```
+
+
+* 调用成员 .
+
+```python
+user.name ;
+```
+
+* 调用函数 [函数名(传入参数)]
+
+```python
+say() ;
+```
+
+* 注释标记 #
+
+```python
+# 这是一条注释
+```
+
+* 字符串(String) ''
+
+```python
+x = '你好这是一条字符串';
+```
+
+* 整数(Int) 
+
+```python
+x = 100 ;
+```
+
+* 双精度小数(Double)
+
+```python
+x = 0.75 ;
+```
+
+* 浮点数
+
+```python
+x = float(0.75) ;
+```
+
+* 布尔型
+
+```python
+x = bool(1) ;
+```
+
+* 列表 
+
+```python
+x = list(1,2,3,4,5) ;
+```
+
+* 字典
+
+```python
+x.name = '小明' ; x.age = 15 ;
+```
+
+* 委托代码块 {}
+
+```python
+x = {print('hello');print(',world');} ;
+```
+
+* 取委托符 []
+
+```python
+# x.play()
+y = [x.play]
+```
+
+* 流程控制
+
+```python
+if([条件（布尔值）],[条件为真执行的委托],[条件为假执行的委托])
+```
+示例
+
+```python
+yes = {print('a = b');} ; no = {print('a != b')};
+if(bool('x','x'),yes,no)
+```
+
+* 循环语句
+
+```python
+for([起始],[步长],[终止],[被循环的委托])
+```
+
+示例
+
+```python
+for(0,1,100,[x.play])
+```
+
+
+* 面向对象
+
+C# Code
+
+```cs
+Zarch.classes["T"] = typeof(Vector3);
+```
+
+Zarch Code
+
+```python
+x = T(float(0),float(0),folat(0));
+```
+
+
 
 ### Zarch in C Sharp
 
@@ -133,55 +260,6 @@ public enum AssemblyType
 }
 ```
 
-### Zarch Code  
-
-* 分句符 ;
-
-```
-code;
-```
-* 赋值 =
-
-```
-y = x ;
-```
-
-
-* 调用成员 .
-
-```
-user.name ;
-```
-
-* 调用函数 [函数名(传入参数)]
-
-```
-say() ;
-```
-
-* 注释标记 #
-
-```
-# 这是一条注释
-```
-
-* 字符串(String) ''
-
-```
-x = '你好这是一条字符串';
-```
-
-* 整数(Int) 
-
-```
-x = 100 ;
-```
-
-* 双精度小数(Double)
-
-```
-x = 0.75 ;
-```
 
 ## 示例
 
