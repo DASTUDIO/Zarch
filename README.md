@@ -10,6 +10,8 @@ C#的辅助语言,用于管理依赖，远程调用，热更新等。
 
 * 使用Z命名空间 `using Z;`
 
+非Visual Studio的用户，也可在[这里](https://github.com/DASTUDIO/Zarch/raw/master/ZarchLib.dll)下载DLL，在解决方案中编辑引用导入dll
+
 ### Unity3D 使用
 
 * 导入[Unity Package](https://github.com/DASTUDIO/Zarch/raw/master/Zarch.unitypackage)到工程
