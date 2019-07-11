@@ -145,6 +145,21 @@ Zarch Code
 x = T(float(0),float(0),folat(0));
 ```
 
+* 内置函数
+
+```python
+int(x);
+str(x);
+float(x);
+double(x);
+null();
+bool(x);bool(a,b)
+list(1,2,3,4,5);
+for(start,step,end,delegate,parameters1,parameters2...)
+if(condition,trueDelegate,falseDelegate,parameters1,parameters2)
+print(a,b,c,d...)
+
+```
 
 
 ### Zarch in C Sharp
