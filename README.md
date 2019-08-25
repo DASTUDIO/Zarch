@@ -1,9 +1,17 @@
 # Zarch
-C#的辅助语言,早期是用于管理依赖，远程调用，热更新。**现在用于 在编译后的环境中执行自定义C#代码。**
-* *1.自动创建并注入使用Attribute标记的类的对象。*
-* *2.用Zarch语言字符串控制被管理的对象的行为。*
-* *3.网络传输的Zarch语言字符串以实现RPC功能。*
+**在编译后的环境中执行自定义C#代码。**
 
+```
+C#的辅助语言,早期是用于管理依赖，远程调用，热更新。
+1.自动创建并注入使用Attribute标记的类的对象。
+2.用Zarch语言字符串控制被管理的对象的行为。
+3.网络传输的Zarch语言字符串以实现RPC功能。
+```
+
+### 使用 
+1.0.4 后请直接使用源码，在工程中导入这四个cs文件：Zarch.cs, ZarchReflectHelper.cs, ZarchAttribute.cs, ZarchFunctions.cs
+
+```
 ### Net Framework 使用
 
 * 导入NuGet包 `点击 Project->Add NuGetPackages->搜索Zarch->勾选->Add Package`
@@ -17,6 +25,7 @@ C#的辅助语言,早期是用于管理依赖，远程调用，热更新。**现
 * 导入[Unity Package](https://github.com/DASTUDIO/Zarch/raw/master/Zarch.unitypackage)到工程
 
 * 参考 Package 里的 Demo
+```
 
 
 ## Get Started
@@ -397,9 +406,15 @@ public class Connector{
 ### 版本
 
 demo:1.0.4更新了一个unitypackage,它展示了在Unity3D中，Zarch如何使用UGUI的InputField组件执行C#(Zarch)代码来控制场景中的物体。
-demo界面：![demo界面](https://raw.githubusercontent.com/DASTUDIO/Zarch/master/img/idle.png)
-控制光照：![控制光照](https://raw.githubusercontent.com/DASTUDIO/Zarch/master/img/light.png)
-获取类型：![获取类型](https://raw.githubusercontent.com/DASTUDIO/Zarch/master/img/type.png)
+
+demo界面：
+![demo界面](https://raw.githubusercontent.com/DASTUDIO/Zarch/master/img/idle.png)
+
+控制光照：
+![控制光照](https://raw.githubusercontent.com/DASTUDIO/Zarch/master/img/light.png)
+
+获取类型：
+![获取类型](https://raw.githubusercontent.com/DASTUDIO/Zarch/master/img/type.png)
 
 
 1.0.4 修复在调用成员方法中遇见重载出现异常的Bug，新增了对类方法的支持,zarch code新增了type方法用以获取注入的class的Type(Unity中常用),C# 新增了tree查看注入的所有对象。
