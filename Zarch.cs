@@ -3,6 +3,7 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Collections.Generic;
+//using UnityEngine;
 
 namespace Z
 {
@@ -56,7 +57,7 @@ namespace Z
         public static _ZarchClass classes = new _ZarchClass();
 
         public static _ZarchMethod methods = new _ZarchMethod();
-
+        // 先函数解析 左边不会是method 而是临时object 比如T().play()
         public object this[string name]
         {
             get
@@ -127,22 +128,57 @@ namespace Z
 
                 string methodName = res[1];
 
-                object source = objects[sourceKey];
+                object source = null;
 
-                Type type = objects.dataManifest[sourceKey];
+                Type type;
 
-                return objects.reflectHelper.InvokeMethod(methodName, parameters, source, type);
+                try
+                {
+                    // 是对象
+                    source = objects[sourceKey];
+
+                    try
+                    {
+                        // 登记过（减少反射查询）
+                        type = objects.dataManifest[sourceKey];
+                    }
+                    catch
+                    {
+                        // 没登记过 比如成员对象的对象
+                        type = source.GetType();
+                    }
+
+                    // 尝试调用
+                    return objects.reflectHelper.InvokeMethod(methodName, parameters, source, type);
+
+                }
+                catch
+                {
+                    try
+                    {
+                        // type是成员字段或属性
+                        type = objects[sourceKey] as Type;
+                    }
+                    catch
+                    {
+                        // 不是属性 是 存的type
+                        type = objects.class_data[sourceKey];
+                    }
+                    return objects.reflectHelper.InvokeMethod(methodName, parameters, source, type);
+                }
 
             }
-            catch
+            catch(Exception e)
             {
                 try
                 {
+                    // 存的委托
                     return ((Func<object[], object>)objects[methodKey])(parameters);
 
                 }
                 catch
                 {
+                    // 存的方法
                     return objects.method_data[methodKey](parameters);
                 }
             }
@@ -279,7 +315,10 @@ namespace Z
             { "bool", objects.functions.GetBool },
             { "if", objects.functions.DoIf },
             { "for",objects.functions.DoFor },
-            { "print",objects.functions.Print }
+            { "print",objects.functions.Print },
+            { "type",(object[] param)=>{ return objects.class_data[param[0].ToString()] as Type; } }
+
+
         };
 
 
@@ -466,11 +505,11 @@ namespace Z
                             }
                             else if (isInt.IsMatch(pms[j]))
                             {
-                                param.Add(Int32.Parse(isInt.Match(pms[j]).Groups[1].Value));
+                                param.Add(Convert.ToInt32(Int32.Parse(isInt.Match(pms[j]).Groups[1].Value)));
                             }
                             else if (isDouble.IsMatch(pms[j]))
                             {
-                                param.Add(Double.Parse(isDouble.Match(pms[j]).Groups[1].Value));
+                                param.Add(Convert.ToDouble(Double.Parse(isDouble.Match(pms[j]).Groups[1].Value)));
                             }
                             else if (isDelegate.IsMatch(pms[j]))
                             {
@@ -491,11 +530,11 @@ namespace Z
                         }
                         else if (isInt.IsMatch(paramKeys))
                         {
-                            param.Add(Int32.Parse(isInt.Match(paramKeys).Groups[1].Value));
+                            param.Add(Convert.ToInt32(Int32.Parse(isInt.Match(paramKeys).Groups[1].Value)));
                         }
                         else if (isDouble.IsMatch(paramKeys))
                         {
-                            param.Add(Double.Parse(isDouble.Match(paramKeys).Groups[1].Value));
+                            param.Add(Convert.ToDouble(Double.Parse(isDouble.Match(paramKeys).Groups[1].Value)));
                         }
                         else if (isDelegate.IsMatch(paramKeys))
                         {
@@ -567,11 +606,11 @@ namespace Z
                 }
                 else if (isInt.IsMatch(res[i]))
                 {
-                    objects[res[i - 1]] = Int32.Parse(isInt.Match(res[i]).Groups[1].Value);
+                    objects[res[i - 1]] = Convert.ToInt32(Int32.Parse(isInt.Match(res[i]).Groups[1].Value));
                 }
                 else if (isDouble.IsMatch(res[i]))
                 {
-                    objects[res[i - 1]] = Double.Parse(isDouble.Match(res[i]).Groups[1].Value);
+                    objects[res[i - 1]] = Convert.ToDouble(Double.Parse(isDouble.Match(res[i]).Groups[1].Value));
                 }
                 else if (isDelegate.IsMatch(res[i]))
                 {
@@ -645,8 +684,17 @@ namespace Z
                 }
             }
 
+            public string[] tree
+            {
+                get
+                {
+                    return objects.method_data.Keys.ToArray();
+                }
+            }
+
         }
 
+        // 用于调用静态方法 和 实例化对象
         public class _ZarchClass
         {
             public Type this[string name]
@@ -665,6 +713,14 @@ namespace Z
             public Func<object[], object> GetConstrutor(string name)
             {
                 return (object[] param) => { return objects.reflectHelper.CreateInstance(objects.class_data[name], param); };
+            }
+
+            public string[] tree
+            {
+                get
+                {
+                    return objects.class_data.Keys.ToArray();
+                }
             }
 
         }

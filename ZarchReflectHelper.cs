@@ -8,16 +8,69 @@ namespace Z
     {
         public object InvokeMethod(string name, object[] param, object source, Type type)
         {
-            MethodInfo method = type.GetMethod(name);
+            // 静态方法
+            if (source == null)
+            {
+                MethodInfo[] _methods = type.GetMethods();
 
-            try
-            {
-                return method.Invoke(source, param);
+                foreach (var _method in _methods) {
+                    if (_method.Name != name)
+                        continue;
+
+                    try
+                    {
+                        return _method.Invoke(null, param);
+                    }
+                    catch { }
+
+                }
+
+                foreach (var _method in _methods)
+                {
+                    if (_method.Name != name)
+                        continue;
+
+                    try
+                    {
+                        return _method.Invoke(null, null);
+                    }
+                    catch { }
+
+                }
+
+                throw new Exception();
             }
-            catch
+
+            MethodInfo[] methods = type.GetMethods();
+
+            // 为了重载  // 有参成员
+            foreach (var method in methods)
             {
-                return method.Invoke(source, null);
+                if (method.Name != name)
+                    continue;
+
+                try
+                {
+                    return method.Invoke(source, param);
+                }
+                catch { }
             }
+
+            // 无参成员
+            foreach (var method in methods)
+            {
+                if (method.Name != name)
+                    continue;
+
+                try
+                {
+                    return method.Invoke(source, null);
+                }
+                catch { }
+
+            }
+
+            throw new Exception();
         }
 
         public Delegate GetDelegate(string name, object source, Type type, Type delegateType)

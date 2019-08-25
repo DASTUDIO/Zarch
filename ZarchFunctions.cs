@@ -13,24 +13,24 @@ namespace Z
         public object GetInt(object value)
         {
             if (value is String)
-                return Int32.Parse((String)value);
-            return (int)value;
+                return Convert.ToInt32(Int32.Parse((String)value));
+            return (int)Convert.ToInt32(value);
         }
 
         // float
         public object GetFloat(object value)
         {
             if (value is String)
-                return float.Parse((String)value);
-            return (float)value;
+                return Convert.ToDouble(float.Parse((String)value));
+            return (float)Convert.ToDouble(value);
         }
 
         // double
         public object GetDouble(object value)
         {
             if (value is String)
-                return double.Parse((String)value);
-            return (double)value;
+                return Convert.ToDouble(double.Parse((String)value));
+            return (double)Convert.ToDouble(value);
         }
 
         // print print(a,b,c,d)
