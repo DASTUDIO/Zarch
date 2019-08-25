@@ -536,9 +536,9 @@ namespace Z
 
         Regex isString = new Regex(@"^'([^']*?)'$");
 
-        Regex isInt = new Regex(@"(^\d+?$)");
+        Regex isInt = new Regex(@"(^\-*?\d+?$)");
 
-        Regex isDouble = new Regex(@"(^\d+?\.\d+?$)");
+        Regex isDouble = new Regex(@"(^\-*?\d+?\.\d+?$)");
 
         Regex isDelegate = new Regex(@"^\[([^\[\]\(\)\{\}\=]+?)\]$");
 
