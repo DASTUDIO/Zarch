@@ -1,5 +1,119 @@
-# Zarch
-**在编译后的环境中执行自定义C#代码。**
+# Zarch语言，简而不单。
+
+### 运行zarch代码
+```csharp
+Zarch.code = "Debug.Log('hello world')";
+```
+记得 `using Z;` 
+
+## 立刻体验：
+
+ps: 操作场景物体需要把ZarchConnector.prefab拖入场景，场景内物体的名称注入为对象名。
+
+#### 移动物体
+```js
+$(myCube).move(1,2,3)
+```
+$ overload 重载
+```js
+$('myCube').move(1,2,3)
+```
+$.move overload 重载
+```js
+$(myCube).move(Vector3(1,2,3))
+```
+#### 常用操作
+
+.get 获取组件
+```js
+t = type('Transform')
+$(myCube).get(t).Translate(1,2,3)
+```
+.add 添加组件
+```js
+t = type('Rigidbody');
+$(myCube).add(t).AddForce(Vector3.up)
+```
+parent 操作父物体
+```js
+$($(child).parent).move(1,2,3)
+```
+ps: $传入的可以是GameObject也可以是string
+
+#### 协程
+例：每0.5秒执行一次co，一共执行5次
+```js
+co = { $(myCube).move(1,2,3) };
+$.coroutine(co,0.5,5)
+```
+
+#### 线程
+例：在t1完成后回到主线程发起t2回调
+```js
+t1 = { Thread.Sleep(3000); };
+t2 = { $(myCube).move(1,2,3) }
+$.thread(t1,t2)
+```
+
+
+
+
+### 版本更新
+
+2.0.0 全新接口，面向Unity3D强化，修正不安全字符，优化对象回收，向后兼容。
+```
+新增内容：
+
+Extension功能
+以及两个示例扩展，Zarch.extension.StartCoroutine()和Zarch.extension.StartThread()。
+
+优化注入
+Zarch.classes.Register<T>()来替代Zarch.classes['someClass'] = type(someClass)
+[ZarchClass]来替代Zarch.classes['someClass'] = type(someClass)，放在类声明的上方。
+
+静态字段
+对类的静态字段和静态属性的支持
+
+Unity组件
+Unity连接器prefab，自动注入场景里全部GameObject，自动注入常用的Unity内置功能。外部用拖入Text组件定向输出。
+
+魔法对象
+魔法对象$，大幅简化脚本代码。
+
+```
+
+增加[ZarchClass]自动注入Attribute，增加
+
+demo:1.0.4更新了一个unitypackage,它展示了在Unity3D中：
+
+如何使用UGUI的InputField组件执行C#(Zarch)代码,并控制场景中的物体。
+
+demo界面：
+![demo界面](https://raw.githubusercontent.com/DASTUDIO/Zarch/master/img/idle.png)
+
+控制光照：
+![控制光照](https://raw.githubusercontent.com/DASTUDIO/Zarch/master/img/light.png)
+
+获取类型：
+![获取类型](https://raw.githubusercontent.com/DASTUDIO/Zarch/master/img/type.png)
+
+
+1.0.4 修复在调用成员方法中遇见重载出现异常的Bug，新增了对类方法的支持,zarch code新增了type方法用以获取注入的class的Type(Unity中常用),C# 新增了tree查看注入的所有对象。
+
+1.0.3.1 修复负数bug(仅源码) 
+
+1.0.3 修复已知Bug，增加实例化对象功能，增加支持代码块、取委托，增加包含if和for在内的十个内置方法。
+
+1.0.2 修复已知Bug，增加可赋值类型
+
+1.0.1 增加简单自定义赋值功能
+
+1.0.0 依赖管理
+
+---
+以下为早期版本手册（仍然兼容）
+
+---
 
 ```
 C#的辅助语言,早期是用于管理依赖，远程调用，热更新。
@@ -405,30 +519,4 @@ public class Connector{
 
 
 ```
-### 版本
 
-demo:1.0.4更新了一个unitypackage,它展示了在Unity3D中：
-
-如何使用UGUI的InputField组件执行C#(Zarch)代码,并控制场景中的物体。
-
-demo界面：
-![demo界面](https://raw.githubusercontent.com/DASTUDIO/Zarch/master/img/idle.png)
-
-控制光照：
-![控制光照](https://raw.githubusercontent.com/DASTUDIO/Zarch/master/img/light.png)
-
-获取类型：
-![获取类型](https://raw.githubusercontent.com/DASTUDIO/Zarch/master/img/type.png)
-
-
-1.0.4 修复在调用成员方法中遇见重载出现异常的Bug，新增了对类方法的支持,zarch code新增了type方法用以获取注入的class的Type(Unity中常用),C# 新增了tree查看注入的所有对象。
-
-1.0.3.1 修复负数bug(仅源码) 
-
-1.0.3 修复已知Bug，增加实例化对象功能，增加支持代码块、取委托，增加包含if和for在内的十个内置方法。
-
-1.0.2 修复已知Bug，增加可赋值类型
-
-1.0.1 增加简单自定义赋值功能
-
-1.0.0 依赖管理
