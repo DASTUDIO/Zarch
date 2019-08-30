@@ -10,7 +10,7 @@ Zarch.code = "Debug.Log('hello world')";
 
 ps: 操作场景物体需要把ZarchConnector.prefab拖入场景，场景内物体的名称注入为对象名。
 
-#### 移动物体
+#### * 移动物体
 ```js
 $(myCube).move(1,2,3)
 ```
@@ -22,32 +22,62 @@ $.move overload 重载
 ```js
 $(myCube).move(Vector3(1,2,3))
 ```
-#### 常用操作
 
-.get 获取组件
+#### * 获取组件
+
 ```js
 t = type('Transform')
 $(myCube).get(t).Translate(1,2,3)
 ```
-.add 添加组件
+
+#### * 添加组件
+
 ```js
 t = type('Rigidbody');
 $(myCube).add(t).AddForce(Vector3.up)
 ```
-parent 操作父物体
+
+#### * 操作父物体
+
 ```js
 $($(child).parent).move(1,2,3)
 ```
 ps: $传入的可以是GameObject也可以是string
 
-#### 协程
+#### * 操作子物体
+
+```js
+$($(parent).children.get(0)).move(1,2,3)
+```
+#### * 构造布尔值
+
+```js
+$(myCube).active(bool(0))
+```
+```python
+# bool(int) 大于0 true 小于等于0 false
+# bool(a,b) 相同 true 不同 false
+```
+
+#### 使用Unity功能
+
+对象
+```js
+print(Time.time);
+```
+方法
+```js
+Debug.Log('hello world');
+```
+
+#### * 协程
 例：每0.5秒执行一次co，一共执行5次
 ```js
 co = { $(myCube).move(1,2,3) };
 $.coroutine(co,0.5,5)
 ```
 
-#### 线程
+#### * 线程
 例：在t1完成后回到主线程发起t2回调
 ```js
 t1 = { Thread.Sleep(3000); };
@@ -55,6 +85,44 @@ t2 = { $(myCube).move(1,2,3) }
 $.thread(t1,t2)
 ```
 
+#### * 控制台方法
+定位输出：把Text组件拖入场景中ZarchConnector物体的同名脚本对应位置（console）中
+
+帮助
+```js
+help()
+```
+任务功能帮助
+```js
+$.help()
+```
+查看全部的-
+
+
+-可用对象
+```js
+objects()
+```
+-自定义方法
+```js
+methods()
+```
+-类（功能）
+```js
+classes()
+```
+
+清屏
+```js
+clear()
+```
+### 配置
+
+反射程序集 
+```csharp
+Zarch.ReflectConfig.Assembly = ZarchReflectHelper.AssemblyType.Executing;
+```
+ps:详情见下方早期版本手册
 
 
 
@@ -81,8 +149,6 @@ Unity连接器prefab，自动注入场景里全部GameObject，自动注入常�
 魔法对象$，大幅简化脚本代码。
 
 ```
-
-增加[ZarchClass]自动注入Attribute，增加
 
 demo:1.0.4更新了一个unitypackage,它展示了在Unity3D中：
 
