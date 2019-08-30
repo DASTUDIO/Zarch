@@ -6,9 +6,9 @@ Zarch.code = "Debug.Log('hello world')";
 ```
 记得 `using Z;` 
 
-## 立刻体验：
+## Get Started：
 
-ps: 操作场景物体需要把ZarchConnector.prefab拖入场景，场景内物体的名称注入为对象名。
+首先把ZarchConnector.prefab拖入场景。
 
 #### * 移动物体
 ```js
@@ -42,7 +42,7 @@ $(myCube).add(t).AddForce(Vector3.up)
 ```js
 $($(child).parent).move(1,2,3)
 ```
-ps: $传入的可以是GameObject也可以是string
+* $() 传入的可以是GameObject(不带引号) 也可以是string(带单引号)
 
 #### * 操作子物体
 
@@ -55,11 +55,12 @@ $($(parent).children.get(0)).move(1,2,3)
 $(myCube).active(bool(0))
 ```
 ```python
+# bool() 返回 false
 # bool(int) 大于0 true 小于等于0 false
-# bool(a,b) 相同 true 不同 false
+# bool(a,b) 相同 true 不同 false , a、b 可以是string、int、float、double 
 ```
 
-#### 使用Unity功能
+#### Unity内置功能
 
 对象
 ```js
@@ -70,6 +71,17 @@ print(Time.time);
 Debug.Log('hello world');
 ```
 
+#### * 委托
+```js
+
+delegate = { print('hello') };
+delegate();
+
+delegate_param = [Debug.Log];
+delegate_param('Hi');
+
+```
+
 #### * 协程
 例：每0.5秒执行一次co，一共执行5次
 ```js
@@ -78,53 +90,173 @@ $.coroutine(co,0.5,5)
 ```
 
 #### * 线程
-例：在t1完成后回到主线程发起t2回调
+例：在线程任务t1完成后回到主线程发起回调方法t2
 ```js
 t1 = { Thread.Sleep(3000); };
-t2 = { $(myCube).move(1,2,3) }
+t2 = { $(myCube).move(1,2,3) };
 $.thread(t1,t2)
 ```
 
-#### * 控制台方法
+#### * 控制台
 定位输出：把Text组件拖入场景中ZarchConnector物体的同名脚本对应位置（console）中
 
-帮助
+##### * 帮助
 ```js
 help()
 ```
-任务功能帮助
+##### * 任务功能帮助
 ```js
 $.help()
 ```
-查看全部的-
+##### * 查看全部
 
-
--可用对象
+> 可用对象
 ```js
 objects()
 ```
--自定义方法
+> 自定义方法
 ```js
 methods()
 ```
--类（功能）
+> 类（功能）
 ```js
 classes()
 ```
 
-清屏
+##### * 清屏
 ```js
 clear()
 ```
-### 配置
+## 进阶
 
-反射程序集 
+### 手动注入
+* 1.外部的对象，方法，和类在注入后才可以在脚本代码中使用。
+* 2.注入对象或类后，其成员方法和字段属性也可以访问。
+#### 注入对象
+```csharp
+Zarch.objects["test"] = new Test();
+```
+对应的在zarch中的使用为
+```js
+test.someMethod();
+```
+#### 注入方法
+```csharp
+System.Func<object[],object> dlt = ...;
+Zarch.methods["myfun"] = dlt;
+```
+对应的在zarch中的使用为
+```js
+myfun(p1,p,...);
+```
+
+#### 注入类
+
+```csharp
+Zarch.classes.Register<Thread>();
+```
+如果是你自己写的类，你也可以通过在类声明上方加[ZarchClass]来实现注入
+```csharp
+[ZarchClass]
+public class MyClass : MonoBehaviour {
+        void Start(){}
+        void Update(){}
+}
+
+```
+
+对应的在zarch中使用为
+```python
+# new
+t = Thread(...);
+
+# static method or field or property
+Thread.CurrentThread.Abort();
+```
+
+#### 为Zarch增加扩展
+```csharp
+public static class 类名随意 {
+    public static void 你的方法名(this Zarch.Extension extension, 你的参数1，你的参数2...) { 要做的事; }
+}
+```
+写好后 可以通过这样调用
+```csharp
+Zarch.extension.你的方法名(你的参数1，你的参数2);
+```
+
+#### 配置反射程序集 
 ```csharp
 Zarch.ReflectConfig.Assembly = ZarchReflectHelper.AssemblyType.Executing;
 ```
-ps:详情见下方早期版本手册
+详情见下方早期版本手册
 
 
+#### 依赖管理
+```csharp
+// 如果你使用1.0的实体类自动依赖注入功能 你需要查阅下方早期版本手册来 了解这些功能
+Zarch.init();
+Zarch.Refresh();
+// 以及自动注入Attribute
+[ZarchBean] [ZarchBean(params...)]
+```
+
+#### 脚本外调用
+```csharp
+// 如果你需要在脚本外调用 你需要查阅下方早期版本手册来 了解这些功能
+Zarch.call();
+Zarch.CreateDelegate()
+```
+
+## 附录
+
+#### 数据类型
+内置以下类型的转换 ：int(),float(),double(),bool(),str(),toUnityObj()
+```js
+a = int(b);
+```
+字符串一律使用单引号
+```js
+mystr = 'hello';
+```
+也可以创建一个列表
+```js
+mylist = list(1,2,3,4,5)
+```
+
+
+#### 流程控制
+
+通过函数实现流程控制
+
+if(bool, trueDelegate, falseDelegate, params1, params2...)
+```js
+a = {...};
+b = {...};
+if(bool(...), a, b);
+# 如果有参数 可以加在后面(...a,b,param1,param2...)
+
+```
+
+for(start, step, end, delegate, param1, param2...)
+```js
+c = {...}
+for(1,1,100,c);
+# 如果有参数 可以加在后面(...100,c,param1,param2...)
+```
+详情见下方早期版本手册
+
+#### 委托中参数传递
+在zarch中最常见的自定义委托是代码块 {...}
+```js
+x = { print(1); }
+```
+这种情况下，传递运行结果到外部用的是对象。
+```js
+a=1;
+x = { a = int(a) + 1; };
+for(0, 1, 10, x);
+```
 
 ### 版本更新
 
@@ -180,6 +312,7 @@ demo界面：
 以下为早期版本手册（仍然兼容）
 
 ---
+# Zarch
 
 ```
 C#的辅助语言,早期是用于管理依赖，远程调用，热更新。
