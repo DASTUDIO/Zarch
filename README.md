@@ -36,6 +36,18 @@ $(myCube).get(t).Translate(1,2,3)
 t = type('Rigidbody');
 $(myCube).add(t).AddForce(Vector3.up)
 ```
+#### * 操作父物体
+
+```js
+$($(child).parent).move(1,2,3)
+```
+* $() 传入的可以是GameObject(不带引号) 也可以是string(带单引号)
+
+#### * 操作子物体
+
+```js
+$($(parent).children.get(0)).move(1,2,3)
+```
 
 #### * 构造布尔值
 

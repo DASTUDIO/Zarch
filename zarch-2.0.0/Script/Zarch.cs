@@ -88,14 +88,17 @@ namespace Z
                         try  { type = dataManifest[sourceName]; }
                         catch { type = source.GetType(); }
 
-                        return reflectHelper.GetField(resourceName, source, type);
+                        try { return reflectHelper.GetField(resourceName, source, type); }
+                        catch { return reflectHelper.GetProperty(resourceName, source, type); }
+
 					}
 					catch
 					{
                         try { type = objects[sourceName] as Type; }
                         catch { type = objects.class_data[sourceName]; }
 
-						return reflectHelper.GetProperty(resourceName, source, type);
+                        try { return reflectHelper.GetProperty(resourceName, source, type); }
+                        catch { return reflectHelper.GetField(resourceName, source, type); }
 					}
 				}
 				catch
