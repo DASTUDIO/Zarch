@@ -142,8 +142,7 @@ test.someMethod();
 ```
 #### 注入方法
 ```csharp
-System.Func<object[],object> dlt = ...;
-Zarch.methods["myfun"] = dlt;
+Zarch.methods["myfun"] = dlt;              // dlt类型为 System.Func<object[],object>
 ```
 对应的在zarch中的使用为
 ```js
@@ -155,6 +154,15 @@ myfun(p1,p,...);
 ```csharp
 Zarch.classes.Register<Thread>();
 ```
+对应的在zarch中使用为
+```python
+# new
+t = Thread(...);
+
+# static method or field or property
+Thread.CurrentThread.Abort();
+```
+
 如果是你自己写的类，你也可以通过在类声明上方加[ZarchClass]来实现注入
 ```csharp
 [ZarchClass]
@@ -165,14 +173,6 @@ public class MyClass : MonoBehaviour {
 
 ```
 
-对应的在zarch中使用为
-```python
-# new
-t = Thread(...);
-
-# static method or field or property
-Thread.CurrentThread.Abort();
-```
 
 #### 为Zarch增加扩展
 ```csharp
