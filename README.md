@@ -122,71 +122,6 @@ t = { res = $.get(url) };
 $.thread( t, { print(res) } )
 ```
 
-#### * Unity内置功能
-
-对象
-```js
-print(Time.time);
-```
-方法
-```js
-Debug.Log('hello world');
-```
-
-#### * 控制台
-
-基本输出
-
-```js
-print('hello world')
-```
-
-帮助
-```js
-help()
-```
-任务功能帮助
-```js
-$.help()
-```
-##### * 查看全部
-
-> 可用对象
-```js
-objects()
-```
-> 自定义方法
-```js
-methods()
-```
-> 类（功能）
-```js
-classes()
-```
-
-清屏
-```js
-clear()
-```
-
-#### * 方法委托
-
-无参数
-```python
-# 定义
-d = { print('hello') };
-# 执行
-d();
-```
-有参数
-```python
-# 定义
-d2 = [Debug.Log];
-# 执行
-d2('Hi');
-
-```
-
 #### 稳定性
 1.如果你用到代码块{}方法委托，建议代码块大括号里不要这样{'someStr'}定义字符串
 而是**把字符串定义在外面**，这样会得到更稳定的代码和更小的资源占用。
@@ -306,6 +241,70 @@ $(myCube).del('MeshRenderer')
 $(mybtn).active('Image',b)     # b是之前定义的布尔值 b = bool(0)
 ```
 
+#### * Unity内置功能
+
+对象
+```js
+print(Time.time);
+```
+方法
+```js
+Debug.Log('hello world');
+```
+
+#### * 控制台
+
+基本输出
+
+```js
+print('hello world')
+```
+
+帮助
+```js
+help()
+```
+任务功能帮助
+```js
+$.help()
+```
+##### * 查看全部
+
+> 可用对象
+```js
+objects()
+```
+> 自定义方法
+```js
+methods()
+```
+> 类（功能）
+```js
+classes()
+```
+
+清屏
+```js
+clear()
+```
+
+#### * 方法委托
+
+无参数
+```python
+# 定义
+d = { print('hello') };
+# 执行
+d();
+```
+有参数
+```python
+# 定义
+d2 = [Debug.Log];
+# 执行
+d2('Hi');
+
+```
 
 ## 进阶
 
