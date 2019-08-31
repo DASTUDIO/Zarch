@@ -294,7 +294,6 @@ for(0, 1, 10, x);
 
 或者 你也可以在C#中通过`Zarch.csharp.S`直接调用这些方法
 
-例：
 
 zarch code:
 ```js
