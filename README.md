@@ -5,7 +5,7 @@
 Zarch.code = "Debug.Log('hello world')";                 // c# code
 ```
 
-## 准备
+### 准备
 
 把ZarchConnector.prefab拖入场景，使用命名空间`using Z;` ，之后 **赋值即运行**。 
 
