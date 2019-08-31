@@ -2,46 +2,29 @@
 
 ### 运行zarch代码
 ```csharp
-Zarch.code = "Debug.Log('hello world')";
+Zarch.code = "Debug.Log('hello world')";                 // c# code
 ```
-记得 `using Z;` 
+赋值即运行
+
+记得 `using Z;` ，以及把ZarchConnector.prefab拖入场景。 
 
 ## Get Started：
-
-首先把ZarchConnector.prefab拖入场景。
 
 #### * 移动物体
 ```js
 $(myCube).move(1,2,3)
 ```
-$ overload 重载
+
+#### * 旋转物体
 ```js
-$('myCube').move(1,2,3)
-```
-$.move overload 重载
-```js
-$(myCube).move(Vector3(1,2,3))
+$(myCube).rotate(10,20,30)
 ```
 
-#### * 获取组件
-
-```js
-t = type('Transform')
-$(myCube).get(t).Translate(1,2,3)
-```
-
-#### * 添加组件
-
-```js
-t = type('Rigidbody');
-$(myCube).add(t).AddForce(Vector3.up)
-```
 #### * 操作父物体
 
 ```js
 $($(child).parent).move(1,2,3)
 ```
-* $() 传入的可以是GameObject(不带引号) 也可以是string(带单引号)
 
 #### * 操作子物体
 
@@ -49,18 +32,199 @@ $($(child).parent).move(1,2,3)
 $($(parent).children.get(0)).move(1,2,3)
 ```
 
-#### * 构造布尔值
+#### * 显示/隐藏 物体
 
 ```js
 $(myCube).active(bool(0))
 ```
-```python
-# bool() 返回 false
-# bool(int) 大于0 true 小于等于0 false
-# bool(a,b) 相同 true 不同 false , a、b 可以是string、int、float、double 
+
+#### * 获取 tag
+```js
+$(myCube).tag()
 ```
 
-#### Unity内置功能
+#### * 设置 tag
+```js
+$(myCube).tag('myTag')
+```
+
+#### * 获取层
+```js
+$(myCube).layer()
+```
+
+#### * 设置层
+```js
+$(myCube).layer('myLayer')
+```
+
+#### * 获取组件
+
+```js
+$(myCube).get('Transform').Translate(1,2,3)
+```
+
+#### * 添加组件
+
+```js
+$(myCube).add('Rigidbody').AddForce(Vector3.up)
+```
+#### * 销毁组件
+```js
+$(myCube).del('MeshRenderer')
+```
+#### * 激活/关闭 组件
+```js
+$(mybtn).active('Image',b)     # b是之前定义的布尔值 b = bool(0)
+```
+
+#### * 绑定点击事件
+UI
+```js
+$(mybtn).click({ print('123') })
+```
+模型
+```js
+$(myCube).click({ Debug.Log(123) })
+```
+
+
+#### * 获取材质
+```js
+$(myCube).mat()
+```
+
+#### * 设置材质
+```js
+$(myCube).mat($(mc).mat())
+```
+
+#### * 获取主贴图
+```js
+$(myCube).tex()
+```
+
+#### * 设置主贴图
+```js
+$(mc).tex($(myCube).tex())
+```
+
+#### * 获取shader参数
+```js
+$(myCube).attr()
+```
+
+#### * 设置shader参数
+```js
+$(myCube).attr('_Glossiness',100)
+```
+
+#### * 获取 UI Image 图片内容
+```js
+$(myImage).image()
+```
+
+#### * 设置 UI Image 图片内容
+```js
+$(target).image($(origin).image())
+```
+
+#### * 获取 UI Text 文本内容
+```js
+$(myText).text()
+```
+
+#### * 设置 UI Text 文本内容
+```js
+$(target).text($(origin).text())
+```
+
+#### * 获取 UI Slider 滑动位置
+```js
+$(mySlider).slider()
+```
+
+#### * 设置 UI Slider 滑动位置
+```js
+$(target).slider($(origin).slider())
+```
+
+#### 重载
+
+$() 构造 重载
+```js
+$('myCube').move(1,2,3)
+```
+$.move 移动 重载
+```js
+$(myCube).move(Vector3(1,2,3))
+```
+
+#### * 方法委托
+
+无参数
+```python
+# 定义
+d = { print('hello') };
+# 执行
+d();
+```
+有参数
+```python
+# 定义
+d2 = [Debug.Log];
+# 执行
+d2('Hi');
+
+```
+
+#### * 协程任务
+
+格式：`$.coroutine([方法委托],[触发间隔],[循环次数])`
+
+当循环次数小于0时 无限循环
+
+当循环次数等于0时 等待\[触发间隔\]秒后，再执行\[方法委托\]
+
+例：
+```js
+co = { $(myCube).move(1,2,3) };
+$.coroutine(co,0.5,5)
+```
+（每0.5秒执行一次co，一共执行5次）
+
+如果你的Unity版本不支持多次触发同一个协程，还有$.coroutine1().$.cotourine2(),$.coroutine3()可以使用。
+
+#### * 线程任务
+
+格式：`$.thread([新线程执行的方法],[完成后回到主线程执行的回调])`
+
+例：
+
+```js
+t1 = { Thread.Sleep(3000); };
+t2 = { $(myCube).move(1,2,3) };
+$.thread(t1,t2)
+```
+
+(在线程任务t1完成后回到主线程发起回调方法t2)
+
+#### * 网络任务
+
+格式：`$.get([请求地址])`
+直接返回字符串
+
+```js
+print($.get('http://baidu.com'))
+```
+该方法为阻塞方法，可以配合线程使用
+```js
+url = 'http://baidu.com/';
+t = { res = $.get(url) };
+$.thread( t, { print(res) } )
+```
+
+#### * Unity内置功能
 
 对象
 ```js
@@ -70,35 +234,18 @@ print(Time.time);
 ```js
 Debug.Log('hello world');
 ```
+除了Unity内置的功能外，自己写的脚本也可以直接使用
 
-#### * 委托
-```js
-
-delegate = { print('hello') };
-delegate();
-
-delegate_param = [Debug.Log];
-delegate_param('Hi');
-
-```
-
-#### * 协程
-例：每0.5秒执行一次co，一共执行5次
-```js
-co = { $(myCube).move(1,2,3) };
-$.coroutine(co,0.5,5)
-```
-
-#### * 线程
-例：在线程任务t1完成后回到主线程发起回调方法t2
-```js
-t1 = { Thread.Sleep(3000); };
-t2 = { $(myCube).move(1,2,3) };
-$.thread(t1,t2)
-```
 
 #### * 控制台
-定位输出：把Text组件拖入场景中ZarchConnector物体的同名脚本对应位置（console）中
+
+定位输出：将用以输出的Text组件拖入场景里 ZarchConnector物体中 ZarchUniry3DConnector组件 的console字段 中
+
+##### * 基本输出
+
+```js
+print('hello world')
+```
 
 ##### * 帮助
 ```js
@@ -127,7 +274,102 @@ classes()
 ```js
 clear()
 ```
+
+
+#### 稳定性
+1.如果你用到代码块{}方法委托，建议代码块大括号里不要这样{'someStr'}定义字符串
+而是**把字符串定义在外面**，这样会得到更稳定的代码和更小的资源占用。
+```js
+url = 'http://baidu.com/';
+t = { res = $.get(url) };
+$.thread( t, { print(res) } )
+```
+
+2.如果使用布尔值 不要直接使用bool() 而是**把布尔值定义在外面**保存成对象使用
+```js
+n = bool(0)
+```
+然后使用对象
+```js
+$(mybtn).active('Image',n)
+```
+
+#### 参数传递
+在zarch中最常见的自定义委托是代码块 {...}
+```js
+x = { print(1); }
+```
+这种情况下，传递运行结果到外部用的是对象。
+```js
+a=1;
+x = { a = int(a) + 1; };
+for(0, 1, 10, x);
+```
+
+
+## 在C#中直接使用
+
+或者 你也可以在C#中通过`Zarch.csharp.S`直接调用这些方法
+
+例：
+
+zarch code:
+```js
+$(myCube).move(1,2,3)
+```
+c# code
+```csharp
+Zarch.csharp.S(myCube).move(1,2,3)
+```
+
 ## 进阶
+
+#### 数据类型
+内置以下类型的转换 ：int(),float(),double(),bool(),str(),toUnityObj()
+```js
+a = int(b);
+```
+字符串 一律使用单引号
+```js
+mystr = 'hello';
+```
+列表
+```js
+mylist = list(1,2,3,4,5)
+```
+布尔值
+```python
+# bool() 返回 false
+# bool(int) 大于0 true 小于等于0 false
+# bool(obj) 不为空时返回true 为空返回false
+# bool(a,b) 相同 true 不同 false , a、b 可以是string、int、float、double 
+```
+null
+```js
+false = bool(null())
+```
+
+#### 流程控制
+
+通过函数实现流程控制
+
+if(bool, trueDelegate, falseDelegate, params1, params2...)
+```js
+a = {...};
+b = {...};
+if(bool(...), a, b);
+# 如果有参数 可以加在后面(...a,b,param1,param2...)
+
+```
+
+for(start, step, end, delegate, param1, param2...)
+```js
+c = {...}
+for(1,1,100,c);
+# 如果有参数 可以加在后面(...100,c,param1,param2...)
+```
+详情见下方早期版本手册
+
 
 ### 手动注入
 * 1.外部的对象，方法，和类在注入后才可以在脚本代码中使用。
@@ -163,7 +405,9 @@ t = Thread(...);
 Thread.CurrentThread.Abort();
 ```
 
-如果是你自己写的类，你也可以通过在类声明上方加[ZarchClass]来实现注入
+从2.0.1开始，使用Unity中的自建脚本不再需要注入
+
+~~如果是你自己写的类，你也可以通过在类声明上方加[ZarchClass]来实现注入~~
 ```csharp
 [ZarchClass]
 public class MyClass : MonoBehaviour {
@@ -171,18 +415,6 @@ public class MyClass : MonoBehaviour {
         void Update(){}
 }
 
-```
-
-
-#### 为Zarch增加扩展
-```csharp
-public static class 类名随意 {
-    public static void 你的方法名(this Zarch.Extension extension, 你的参数1，你的参数2...) { 要做的事; }
-}
-```
-写好后 可以通过这样调用
-```csharp
-Zarch.extension.你的方法名(你的参数1，你的参数2);
 ```
 
 #### 配置反射程序集 
@@ -210,55 +442,32 @@ Zarch.CreateDelegate()
 
 ## 附录
 
-#### 数据类型
-内置以下类型的转换 ：int(),float(),double(),bool(),str(),toUnityObj()
-```js
-a = int(b);
+#### 为Zarch增加扩展
+你可以把以下代码写在任何地方
+```csharp
+public static class 类名随意 {
+    public static void 你的方法名(this Zarch.Extension extension, 你的参数1，你的参数2...) { 要做的事; }
+}
 ```
-字符串一律使用单引号
-```js
-mystr = 'hello';
-```
-也可以创建一个列表
-```js
-mylist = list(1,2,3,4,5)
+写好后 可以通过这样调用
+```csharp
+Zarch.csharp.你的方法名(你的参数1，你的参数2);
 ```
 
 
-#### 流程控制
+#### 开启新功能
+如果发现需要的Unity功能未在zarch code用开启，
+请自行前往 plugins/zarch/script/ZarchUnity3DConnector.cs中，仿照其他Unity功能的注册自行注册.
 
-通过函数实现流程控制
-
-if(bool, trueDelegate, falseDelegate, params1, params2...)
+例:添加Slider
 ```js
-a = {...};
-b = {...};
-if(bool(...), a, b);
-# 如果有参数 可以加在后面(...a,b,param1,param2...)
-
+Zarch.classes.Register<Slider>();
 ```
 
-for(start, step, end, delegate, param1, param2...)
-```js
-c = {...}
-for(1,1,100,c);
-# 如果有参数 可以加在后面(...100,c,param1,param2...)
-```
-详情见下方早期版本手册
-
-#### 委托中参数传递
-在zarch中最常见的自定义委托是代码块 {...}
-```js
-x = { print(1); }
-```
-这种情况下，传递运行结果到外部用的是对象。
-```js
-a=1;
-x = { a = int(a) + 1; };
-for(0, 1, 10, x);
-```
 
 ### 版本更新
+
+2.0.1 增加在C#中使用魔法对象的扩展，增加$().click万能事件绑定,$.get()网络加载功能，$().tag/.layer/.mat/.tex/.attr/.image/.text/.slider,增加备用协程123，增加自写脚本免注入功能。
 
 2.0.0 全新接口，面向Unity3D强化，修正不安全字符，优化对象回收，向后兼容。
 ```
