@@ -13,6 +13,9 @@ namespace Z
         [SerializeField]
         public Text console;
 
+        [SerializeField]
+        public List<GameObject> prefabs = new List<GameObject>();
+
         #region loading
 
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
@@ -117,6 +120,8 @@ namespace Z
             Zarch.classes.Register<Motion>();
             Zarch.classes.Register<Thread>();
 
+            Zarch.classes.Register<KeyCode>();
+
             #endregion
 
             Zarch.methods["help"] = instance.help;
@@ -125,10 +130,19 @@ namespace Z
             Zarch.methods["methods"] = instance.show_methods;
             Zarch.methods["classes"] = instance.show_classes;
             Zarch.methods["toUnityObj"] = instance.to_unity_object;
+            Zarch.methods["new"] = obj => { return Instantiate(obj[0] as GameObject); };
+            Zarch.methods["del"] = obj => { Destroy(obj[0] as GameObject); return null; };
+            Zarch.methods["get"] = obj =>
+            {
+                string name = System.Convert.ToString(obj[0]);
+                System.Type type = _get_type(name);
+                return FindObjectOfType(type);
+            };
 
             Zarch.classes["$"] = typeof(GoHelper);
             Zarch.objects["$"] = instance.task;
-
+            
+            
         }
 
         void load_objects()
@@ -148,6 +162,21 @@ namespace Z
 
                     Zarch.objects[key] = objs[i];
 
+                }
+                catch { }
+            }
+
+            for (int i = 0; i < prefabs.Count; i++)
+            {
+                string key = prefabs[i].name.Replace(" ", "");
+
+                while (Zarch.objects.hasKey(key))
+                {
+                    key += "0";
+                }
+                try
+                {
+                    Zarch.objects[key] = prefabs[i];
                 }
                 catch { }
             }
@@ -268,7 +297,24 @@ namespace Z
 
             public void rotate(double x, double y, double z) { go.transform.Rotate((float)x, (float)y, (float)z); }
 
-            public void rotate(Quaternion quaternion) { go.transform.rotation = quaternion; }
+            
+
+
+            public void pos(Vector3 pos) { go.transform.position = pos; }
+
+            public void pos(double x, double y, double z) { go.transform.position = new Vector3((float)x, (float)y, (float)z); }
+
+            public Vector3 pos() { return go.transform.position; }
+
+
+            public void rot(Vector3 rot) { go.transform.eulerAngles = rot; }
+
+            public void rot(double x, double y, double z) { go.transform.eulerAngles = new Vector3((float)x, (float)y, (float)z); }
+
+            public void rot(Quaternion quaternion) { go.transform.rotation = quaternion; }
+
+            public Vector3 rot() { return go.transform.eulerAngles; }
+            
 
             public GameObject parent
             {
@@ -382,8 +428,6 @@ namespace Z
 
             public void click(System.Func<object[], object> func) { click(delegate { func(null); }); }
 
-            System.Type _get_type(string name) { try { return Zarch.classes[name]; } catch { return Zarch.objects.reflectHelper.GetType(Zarch.ReflectConfig.Assembly, name); } }
-            
         }
 
         public class ArrayHelper<T>
@@ -398,6 +442,10 @@ namespace Z
             public void reset() { meta.Clear(); }
             public ArrayHelper(List<T> _meta) { meta = _meta; }
         }
+
+
+        static System.Type _get_type(string name) { try { return Zarch.classes[name]; } catch { return Zarch.objects.reflectHelper.GetType(Zarch.ReflectConfig.Assembly, name); } }
+
 
         #region coroutine and thread
 
