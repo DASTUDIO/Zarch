@@ -465,7 +465,6 @@ Zarch.classes.Register<Slider>();
 新增内容：
 
 Extension功能
-以及两个示例扩展，Zarch.extension.StartCoroutine()和Zarch.extension.StartThread()。
 
 优化注入
 Zarch.classes.Register<T>()来替代Zarch.classes['someClass'] = type(someClass)
