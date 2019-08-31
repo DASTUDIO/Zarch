@@ -7,11 +7,10 @@ Zarch.code = "Debug.Log('hello world')";                 // c# code
 
 ## 准备
 
-把ZarchConnector.prefab拖入场景，使用命名空间`using Z;` ，之后 **赋值即运行**。 
+>把ZarchConnector.prefab拖入场景，使用命名空间`using Z;` ，之后 **赋值即运行**。 
 
-**直接用[场景中物体名]就可以对物体操作**，例如`Debug.Log(myCube.name)`.
+>**直接用[场景中物体名]就可以对物体操作**，例如`Debug.Log(myCube.name)`.
 
->zarch框架会自动注入场景中所有GameObject对象，这些物体在zarch code中的对象名就是在它们场景中的名称(gameObject.name),注入的时候，如果有重名，会在后方自动加'0'。
 
 
 ## Get Started：
@@ -109,9 +108,9 @@ del(myCube)
 new(ball)             //ball是提前拖入ZarchConnector中的prefab
 
 ```
->**把prefab预制体拖入ZarchConnector中**
->
->拖入ZarchUnity3DConnector脚本的prefabs列表里，在zarch中就可以中用名称实例化它到场景。
+>**将prefab预制体拖入ZarchConnector中**
+> 
+>ZarchUnity3DConnector脚本的prefabs列表里，就可以中用new(名称)实例化它到场景。
 
 
 
@@ -267,7 +266,7 @@ $.thread( { Thread.Sleep(3000); }, { $(myCube).move(1,2,3) })
 
 
 ```js
-print($.get('http://baidu.com'))
+$.get('http://baidu.com')
 ```
 
 >格式：`$.get([请求地址])`
@@ -368,7 +367,7 @@ clear()
 
 ## 在C#中使用魔法对象 $
 
-你可以在C#中通过`Zarch.csharp.S`直接调用魔法对象
+>你可以在C#中通过`Zarch.csharp.S`直接调用魔法对象
 
 
 zarch code:
@@ -537,14 +536,14 @@ Zarch.CreateDelegate()
 >定位输出：将用以输出的Text组件拖入场景里 ZarchConnector物体中 ZarchUnity3DConnector组件 的console字段 中
 
 #### 为Zarch增加扩展
-你可以把以下代码写在任何地方
+>你可以把以下代码写在任何地方
 
 ```csharp
 public static class 类名随意 {
     public static void 你的方法名(this Zarch.Extension extension, 你的参数1，你的参数2...) { 要做的事; }
 }
 ```
-写好后 可以通过这样调用
+>写好后 可以通过这样调用
 
 ```csharp
 Zarch.csharp.你的方法名(你的参数1，你的参数2);
@@ -552,14 +551,14 @@ Zarch.csharp.你的方法名(你的参数1，你的参数2);
 
 
 #### 开启新功能
-如果发现需要的Unity功能未在zarch code用开启，
-请自行前往 plugins/zarch/script/ZarchUnity3DConnector.cs中，仿照其他Unity功能的注册自行注册.
+>如果发现需要的Unity功能未在zarch code用开启，
+>请自行前往 plugins/zarch/script/ZarchUnity3DConnector.cs中，仿照其他Unity功能的注册自行注册.
 
-例:添加Slider
+>例:添加Slider
 
-```js
-Zarch.classes.Register<Slider>();
-```
+>```js
+>Zarch.classes.Register<Slider>();
+>```
 
 
 ## 版本更新
