@@ -5,7 +5,14 @@
 Zarch.code = "Debug.Log('hello world')";                 // c# code
 ```
 
+## 准备
+
 把ZarchConnector.prefab拖入场景，使用命名空间`using Z;` ，之后 **赋值即运行**。 
+
+**直接用[场景中物体名]就可以对物体操作**，例如`Debug.Log(myCube.name)`.
+
+>zarch框架会自动注入场景中所有GameObject对象，这些物体在zarch code中的对象名就是在它们场景中的名称(gameObject.name),注入的时候，如果有重名，会在后方自动加'0'。
+
 
 ## Get Started：
 
