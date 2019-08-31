@@ -432,7 +432,7 @@ Zarch.CreateDelegate()
 
 #### 控制台
 
-定位输出：将用以输出的Text组件拖入场景里 ZarchConnector物体中 ZarchUniry3DConnector组件 的console字段 中
+定位输出：将用以输出的Text组件拖入场景里 ZarchConnector物体中 ZarchUnity3DConnector组件 的console字段 中
 
 #### 为Zarch增加扩展
 你可以把以下代码写在任何地方
