@@ -4,9 +4,8 @@
 ```csharp
 Zarch.code = "Debug.Log('hello world')";                 // c# code
 ```
-赋值即运行
 
-记得 `using Z;` ，以及把ZarchConnector.prefab拖入场景。 
+把ZarchConnector.prefab拖入场景，然后 `using Z;` ，之后赋值即运行。 
 
 ## Get Started：
 
