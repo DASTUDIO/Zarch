@@ -150,25 +150,13 @@ $(myCube).del('MeshRenderer')
 $(mybtn).active('Image',b)     # b是之前定义的布尔值 b = bool(0)
 ```
 
-#### * 方法委托
-
-无参数
-```python
-# 定义
-d = { print('hello') };
-# 执行
-d();
-```
-有参数
-```python
-# 定义
-d2 = [Debug.Log];
-# 执行
-d2('Hi');
-
-```
-
 #### * 协程任务
+
+```js
+$.coroutine({ $(myCube).move(1,2,3) }, 0.5, 5)
+```
+
+（每0.5秒执行一次移动，一共执行5次）
 
 格式：`$.coroutine([方法委托],[触发间隔],[循环次数])`
 
@@ -176,37 +164,30 @@ d2('Hi');
 
 当循环次数等于0时 等待\[触发间隔\]秒后，再执行\[方法委托\]
 
-例：
-```js
-co = { $(myCube).move(1,2,3) };
-$.coroutine(co,0.5,5)
-```
-（每0.5秒执行一次co，一共执行5次）
-
 如果你的Unity版本不支持多次触发同一个协程，还有$.coroutine1().$.cotourine2(),$.coroutine3()可以使用。
 
 #### * 线程任务
 
-格式：`$.thread([新线程执行的方法],[完成后回到主线程执行的回调])`
-
-例：
 
 ```js
-t1 = { Thread.Sleep(3000); };
-t2 = { $(myCube).move(1,2,3) };
-$.thread(t1,t2)
+$.thread( { Thread.Sleep(3000); }, { $(myCube).move(1,2,3) })
 ```
 
-(在线程任务t1完成后回到主线程发起回调方法t2)
+(在线程任务sleep()完成后回到主线程移动游戏物体myCube)
+
+格式：`$.thread([新线程执行的方法],[完成后回到主线程执行的回调])`
+
 
 #### * 网络任务
 
-格式：`$.get([请求地址])`
-直接返回字符串
 
 ```js
 print($.get('http://baidu.com'))
 ```
+
+格式：`$.get([请求地址])`
+直接返回字符串
+
 该方法为阻塞方法，可以配合线程使用
 ```js
 url = 'http://baidu.com/';
@@ -224,12 +205,6 @@ print(Time.time);
 ```js
 Debug.Log('hello world');
 ```
-除了Unity内置的功能外，自己写的脚本也可以直接使用
-
-
-#### * 控制台
-
-定位输出：将用以输出的Text组件拖入场景里 ZarchConnector物体中 ZarchUniry3DConnector组件 的console字段 中
 
 ##### * 基本输出
 
@@ -265,6 +240,23 @@ classes()
 clear()
 ```
 
+#### * 方法委托
+
+无参数
+```python
+# 定义
+d = { print('hello') };
+# 执行
+d();
+```
+有参数
+```python
+# 定义
+d2 = [Debug.Log];
+# 执行
+d2('Hi');
+
+```
 
 #### 稳定性
 1.如果你用到代码块{}方法委托，建议代码块大括号里不要这样{'someStr'}定义字符串
@@ -414,16 +406,22 @@ Zarch.ReflectConfig.Assembly = ZarchReflectHelper.AssemblyType.Executing;
 详情见下方早期版本手册
 
 
-#### 依赖管理
+#### 复杂工程
+如果你的工程规模很大，很复杂，那我建议你不要把各种引用拖来拖去，也不要频繁地Find物体,
+
+而是**使用统一的依赖管理**功能。
+
 ```csharp
 // 如果你使用1.0的实体类自动依赖注入功能 你需要查阅下方早期版本手册来 了解这些功能
+Zarch.object[] 
 Zarch.init();
 Zarch.Refresh();
 // 以及自动注入Attribute
 [ZarchBean] [ZarchBean(params...)]
+
 ```
 
-#### 脚本外调用
+#### c# 调用 zarch code 内部的成员
 ```csharp
 // 如果你需要在脚本外调用 你需要查阅下方早期版本手册来 了解这些功能
 Zarch.call();
@@ -431,6 +429,10 @@ Zarch.CreateDelegate()
 ```
 
 ## 附录
+
+#### 控制台
+
+定位输出：将用以输出的Text组件拖入场景里 ZarchConnector物体中 ZarchUniry3DConnector组件 的console字段 中
 
 #### 为Zarch增加扩展
 你可以把以下代码写在任何地方
