@@ -207,17 +207,17 @@ Debug.Log('hello world');
 
 #### * 控制台
 
-##### * 基本输出
+基本输出
 
 ```js
 print('hello world')
 ```
 
-##### * 帮助
+帮助
 ```js
 help()
 ```
-##### * 任务功能帮助
+任务功能帮助
 ```js
 $.help()
 ```
@@ -236,7 +236,7 @@ methods()
 classes()
 ```
 
-##### * 清屏
+清屏
 ```js
 clear()
 ```
