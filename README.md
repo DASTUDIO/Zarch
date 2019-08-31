@@ -38,26 +38,6 @@ $($(parent).children.get(0)).move(1,2,3)
 $(myCube).active(bool(0))
 ```
 
-#### * 获取 tag
-```js
-$(myCube).tag()
-```
-
-#### * 设置 tag
-```js
-$(myCube).tag('myTag')
-```
-
-#### * 获取层
-```js
-$(myCube).layer()
-```
-
-#### * 设置层
-```js
-$(myCube).layer('myLayer')
-```
-
 #### * 获取组件
 
 ```js
@@ -69,14 +49,6 @@ $(myCube).get('Transform').Translate(1,2,3)
 ```js
 $(myCube).add('Rigidbody').AddForce(Vector3.up)
 ```
-#### * 销毁组件
-```js
-$(myCube).del('MeshRenderer')
-```
-#### * 激活/关闭 组件
-```js
-$(mybtn).active('Image',b)     # b是之前定义的布尔值 b = bool(0)
-```
 
 #### * 绑定点击事件
 UI
@@ -87,7 +59,6 @@ $(mybtn).click({ print('123') })
 ```js
 $(myCube).click({ Debug.Log(123) })
 ```
-
 
 #### * 获取材质
 ```js
@@ -149,15 +120,34 @@ $(mySlider).slider()
 $(target).slider($(origin).slider())
 ```
 
-#### 重载
-
-$() 构造 重载
+#### * 获取 tag
 ```js
-$('myCube').move(1,2,3)
+$(myCube).tag()
 ```
-$.move 移动 重载
+
+#### * 设置 tag
 ```js
-$(myCube).move(Vector3(1,2,3))
+$(myCube).tag('myTag')
+```
+
+#### * 获取层
+```js
+$(myCube).layer()
+```
+
+#### * 设置层
+```js
+$(myCube).layer('myLayer')
+```
+
+#### * 销毁组件
+```js
+$(myCube).del('MeshRenderer')
+```
+
+#### * 激活/关闭 组件
+```js
+$(mybtn).active('Image',b)     # b是之前定义的布尔值 b = bool(0)
 ```
 
 #### * 方法委托
