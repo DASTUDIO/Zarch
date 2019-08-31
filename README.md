@@ -205,6 +205,8 @@ print(Time.time);
 Debug.Log('hello world');
 ```
 
+#### * 控制台
+
 ##### * 基本输出
 
 ```js
