@@ -19,18 +19,6 @@ $(myCube).move(1,2,3)
 $(myCube).rotate(10,20,30)
 ```
 
-#### * 操作父物体
-
-```js
-$($(child).parent).move(1,2,3)
-```
-
-#### * 操作子物体
-
-```js
-$($(parent).children.get(0)).move(1,2,3)
-```
-
 #### * 显示/隐藏 物体
 
 ```js
@@ -87,66 +75,6 @@ $(myCube).attr('_Glossiness')
 #### * 设置shader参数
 ```js
 $(myCube).attr('_Glossiness',100)
-```
-
-#### * 获取 UI Image 图片内容
-```js
-$(myImage).image()
-```
-
-#### * 设置 UI Image 图片内容
-```js
-$(target).image($(origin).image())
-```
-
-#### * 获取 UI Text 文本内容
-```js
-$(myText).text()
-```
-
-#### * 设置 UI Text 文本内容
-```js
-$(target).text($(origin).text())
-```
-
-#### * 获取 UI Slider 滑动位置
-```js
-$(mySlider).slider()
-```
-
-#### * 设置 UI Slider 滑动位置
-```js
-$(target).slider($(origin).slider())
-```
-
-#### * 获取 tag
-```js
-$(myCube).tag()
-```
-
-#### * 设置 tag
-```js
-$(myCube).tag('myTag')
-```
-
-#### * 获取层
-```js
-$(myCube).layer()
-```
-
-#### * 设置层
-```js
-$(myCube).layer('myLayer')
-```
-
-#### * 销毁组件
-```js
-$(myCube).del('MeshRenderer')
-```
-
-#### * 激活/关闭 组件
-```js
-$(mybtn).active('Image',b)     # b是之前定义的布尔值 b = bool(0)
 ```
 
 #### * 协程任务
@@ -303,6 +231,81 @@ c# code
 ```csharp
 Zarch.csharp.S(myCube).move(1,2,3)
 ```
+
+## 其他功能
+
+#### * 操作父物体
+
+```js
+$($(child).parent).move(1,2,3)
+```
+
+#### * 操作子物体
+
+```js
+$($(parent).children.get(0)).move(1,2,3)
+```
+
+#### * 获取 UI Image 图片内容
+```js
+$(myImage).image()
+```
+
+#### * 设置 UI Image 图片内容
+```js
+$(target).image($(origin).image())
+```
+
+#### * 获取 UI Text 文本内容
+```js
+$(myText).text()
+```
+
+#### * 设置 UI Text 文本内容
+```js
+$(target).text($(origin).text())
+```
+
+#### * 获取 UI Slider 滑动位置
+```js
+$(mySlider).slider()
+```
+
+#### * 设置 UI Slider 滑动位置
+```js
+$(target).slider($(origin).slider())
+```
+
+#### * 获取 tag
+```js
+$(myCube).tag()
+```
+
+#### * 设置 tag
+```js
+$(myCube).tag('myTag')
+```
+
+#### * 获取层
+```js
+$(myCube).layer()
+```
+
+#### * 设置层
+```js
+$(myCube).layer('myLayer')
+```
+
+#### * 销毁组件
+```js
+$(myCube).del('MeshRenderer')
+```
+
+#### * 激活/关闭 组件
+```js
+$(mybtn).active('Image',b)     # b是之前定义的布尔值 b = bool(0)
+```
+
 
 ## 进阶
 
