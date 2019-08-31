@@ -5,7 +5,7 @@
 Zarch.code = "Debug.Log('hello world')";                 // c# code
 ```
 
-把ZarchConnector.prefab拖入场景，然后 `using Z;` ，之后赋值即运行。 
+把ZarchConnector.prefab拖入场景，使用命名空间`using Z;` ，之后 **赋值即运行**。 
 
 ## Get Started：
 
@@ -81,7 +81,7 @@ $(mc).tex($(myCube).tex())
 
 #### * 获取shader参数
 ```js
-$(myCube).attr()
+$(myCube).attr('_Glossiness')
 ```
 
 #### * 设置shader参数
