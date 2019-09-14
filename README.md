@@ -569,6 +569,8 @@ Zarch.csharp.你的方法名(你的参数1，你的参数2);
 
 ## 版本更新
 
+2.1.0-preview 增加 Unity Editor界面，由传统的拖放connector prefab改为Editor panel中点击按钮初始化,优化 $().text()/image()/slider()体验，优化协程流畅度， 内部集成了线程通信对用户透明的网络功能，byte[]级别，支持ipv6. 
+
 2.0.2 修复方法名解析bug， 内核升级 ：允许代码块委托嵌套。
 
 ```js
